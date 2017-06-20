@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: network-evaluation-tools
+Version: 0.0.1
+Summary: Python package to perform network based stratification of binary somatic mutations as described in Hofree et al 2013.
+Home-page: https://github.com/huangger/pyNBS
+Author: Justin Huang
+Author-email: jkh013@ucsd.edu
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.7
