@@ -7,17 +7,19 @@ from pyNBS import network_propagation as prop
 import networkx as nx
 import numpy as np
 import pandas as pd
+import random
 
 # Wrapper function to run a single instance of network-regularized NMF on given somatic mutation data and network
 # sm_mat = binary mutation matrix of data to perform network NMF on
 # options = dictionary of options to set for various parts of netNMF execuction
 # propNet = NetworkX graph object to propagate binary mutations over
 # regNet_glap = Pandas DataFrame graph laplacian of network from influence matrix of propNet
-def NBS_single(sm_mat, options, propNet=None, regNet_glap=None, verbose=True, save_path=None):
+def NBS_single(sm_mat, options, propNet=None, propNet_kernel=None, regNet_glap=None, verbose=True, save_path=None):
     # Set default NBS netNMF options
     NBS_options = {'pats_subsample_p':0.8, 
                    'gene_subsample_p':0.8, 
                    'min_muts':10,
+                   'shuff_network_labels':False,
                    'prop_data':True, 
                    'prop_alpha':0.7, 
                    'prop_symmetric_norm':False, 
@@ -55,11 +57,21 @@ def NBS_single(sm_mat, options, propNet=None, regNet_glap=None, verbose=True, sa
     if verbose:
         print 'Somatic mutation data sub-sampling complete'
 
+    # Shuffle network labels
+    if NBS_options['shuff_network_labels']:
+        shuff_node_order = list(sm_mat_subsample.columns)
+        random.shuffle(shuff_node_order)
+        sm_mat_subsample.columns = shuff_node_order
+
     # Propagate Data
     if NBS_options['prop_data']:
-        prop_sm_data = prop.network_propagation(propNet, sm_mat_subsample, 
-                                                symmetric_norm=NBS_options['prop_symmetric_norm'], 
-                                                alpha=NBS_options['prop_alpha'], verbose=verbose)
+        if propNet_kernel is None:
+            prop_sm_data = prop.network_propagation(propNet, sm_mat_subsample, 
+                                                    symmetric_norm=NBS_options['prop_symmetric_norm'], 
+                                                    alpha=NBS_options['prop_alpha'], verbose=verbose)
+        else:
+            prop_sm_data = prop.network_kernel_propagation(propNet, propNet_kernel, sm_mat_subsample, 
+                                                           verbose=verbose, save_path=None)
         if verbose:
             print 'Somatic mutation data propagated'
     else:

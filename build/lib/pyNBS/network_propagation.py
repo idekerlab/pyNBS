@@ -62,12 +62,42 @@ def network_propagation(network, binary_matrix, alpha, symmetric_norm=False, ver
 		prop_data = fast_random_walk(alpha, binary_matrix_filt, subgraph_norm, prop_data)
 	# Return propagated result as dataframe
 	prop_data_df = pd.DataFrame(data=prop_data[:,1:], index = binary_matrix.index, columns=prop_data_node_order)
-	if save_path is None:
-		if verbose:
-			print 'Network Propagation Complete:', time.time()-starttime, 'seconds'		
-		return prop_data_df
-	else:
-		prop_data_df.to_csv(save_path)
-		if verbose:
-			print 'Network Propagation Complete:', time.time()-starttime, 'seconds'				
-		return prop_data_df
+	if save_path is not None:
+		if save_path.endswith('.hdf'):
+			hdf_key = save_path.split('/')[-1].split('.')[0]
+			prop_data_df.to_hdf(save_path, key=hdf_key, mode='w')
+		else:
+			prop_data_df.to_csv(save_path)
+	if verbose:
+		print 'Network Propagation Complete:', time.time()-starttime, 'seconds'				
+	return prop_data_df
+
+# Wrapper for propagating binary mutation matrix over network by subgraph given network propagation kernel
+# The network propagation kernel can be pre-computed using the network_propagation function and a identity matrix data frame of the network
+# Pre-calculating the kernel for many runs of NBS saves a significant amount of time
+def network_kernel_propagation(network, network_kernel, binary_matrix, verbose=False, save_path=None):
+    starttime=time.time()
+    if verbose:
+        print 'Performing network propagation with network kernel'
+    # Separate network into connected components and calculate propagation values of each sub-sample on each connected component
+    subgraph_nodelists = list(nx.connected_components(network))
+    # Initialize propagation results by propagating first subgraph
+    prop_nodelist = list(subgraph_nodelists[0])
+    prop_data = np.dot(binary_matrix[prop_nodelist], network_kernel.ix[prop_nodelist][prop_nodelist])
+    # Get propagated results for remaining subgraphs
+    for nodelist in subgraph_nodelists[1:]:
+        subgraph_nodes = list(nodelist)
+        prop_nodelist = prop_nodelist + subgraph_nodes
+        subgraph_prop_data = np.dot(binary_matrix[subgraph_nodes], network_kernel.ix[subgraph_nodes][subgraph_nodes])
+        prop_data = np.concatenate((prop_data, subgraph_prop_data), axis=1)
+    # Return propagated result as dataframe
+    prop_data_df = pd.DataFrame(data=prop_data, index = binary_matrix.index, columns=prop_nodelist)
+    if save_path is not None:
+        if save_path.endswith('.hdf'):
+            hdf_key = save_path.split('/')[-1].split('.')[0]
+            prop_data_df.to_hdf(save_path, key=hdf_key, mode='w')
+        else:
+            prop_data_df.to_csv(save_path)
+    if verbose:
+        print 'Network Propagation Complete:', time.time()-starttime, 'seconds'				
+    return prop_data_df    		

@@ -20,6 +20,7 @@ import argparse
 import os
 import time
 import pandas as pd
+import numpy as np
 
 # Valid file path check (Does not check file formatting, but checks if given path exists and is readable)
 def valid_infile(in_file):
@@ -86,7 +87,7 @@ if __name__ == "__main__":
         help='Number of nearest neighbors to add to the regularization network during construction. Used if -reg is True.')
     parser.add_argument('-s_knngl', '--save_knn_glap', type=valid_outfile, default=None, required=False,
         help='File path of where to save graph laplacian for k-nearest-neighbor network constructed from propagation network influence matrix. No path given as default, automatically saves pandas hdf file if file path given.')
-    parser.add_argument('-rngl', '--regularization_network_graph_laplacian_file', type=valid_infile, required=False,
+    parser.add_argument('-rngl', '--regularization_network_graph_laplacian_file', type=valid_infile, default=None, required=False,
         help='Path to regularization network graph laplacian matrix if previously calculated. Required if -reg is False.')
 
     # Parameters for sub-sampling data
@@ -98,10 +99,16 @@ if __name__ == "__main__":
         help='Proportion of mutated genes to sub-sample')    
     parser.add_argument('-mm', '--min_muts', type=positive_int, default=10, required=False,
         help='Minimum number of mutations for a sample to contain after sub-sampling to be considered for further analysis.')
+    parser.add_argument('-snl', '--shuffle_network_labels', default=False, action="store_true", required=False,
+        help='Determination of whether or not to shuffle the network node labels by shuffling the sub-sampled mutation data column labels.')
 
     # Parameters for network propagation
     parser.add_argument('-prop', '--propagate_data', type=bool, default=True, required=False,
         help='Determination of whether or not to propagate sub-sampled binary mutation data over given molecular network.')
+    parser.add_argument('-cpk', '--calculate_propagation_kernel', default=False, action="store_true", required=False,
+        help='Determination of whether or not to pre-calculate network kernel for network propagation. Highly recommended if no network kernel file is given already and niter > 10.') 
+    parser.add_argument('-kernel', '--propagation_kernel_file', type=valid_infile, default=None, required=False,
+        help='Path to pre-calculated propagation kernel of network. This will save time in the propagation step.')    
     parser.add_argument('-a', '--alpha', type=restricted_float, default=0.7, required=False,
         help='Propagation constant to use in the propagation of mutations over molecular network. Range is 0.0-1.0 exclusive.')
     parser.add_argument('-norm', '--symmetric_network_normalization', type=bool, default=False, required=False,
@@ -174,14 +181,41 @@ if __name__ == "__main__":
     if args.regularize_network:
         knnGlap = core.network_inf_KNN_glap(network, gamma=args.gamma, kn=args.k_nearest_neighbors, verbose=args.verbose, save_path=args.save_knn_glap)
     else:
-        knnGlap = pd.read_hdf(args.regularization_network_graph_laplacian_file)
+        # Load propatagion kernel
+        if args.regularization_network_graph_laplacian_file.endswith('.hdf'):
+            knnGlap = pd.read_hdf(args.regularization_network_graph_laplacian_file)
+        else:
+            knnGlap = pd.read_csv(args.regularization_network_graph_laplacian_file)
         if args.verbose:
             print 'Pre-calculated regularization network graph laplacian loaded'
     
+    # Get network propagation kernel
+    if args.propagation_kernel_file is not None:
+        # Load propagation kernel
+        if args.propagation_kernel_file.endswith('.hdf'):
+            kernel = pd.read_hdf(args.propagation_kernel_file)
+        else:
+            kernel = pd.read_csv(args.propagation_kernel_file)
+        if args.verbose:
+            print 'Pre-calculated network kernel loaded'
+    else:
+        if args.calculate_propagation_kernel:
+            # Calculate propagation kernel by propagating identity matrix of network
+            network_nodes = network.nodes()
+            network_I = pd.DataFrame(np.identity(len(network_nodes)), index=network_nodes, columns=network_nodes)
+            kernel = prop.network_propagation(network, network_I, args.alpha, verbose=True)  
+            if args.verbose:
+                print 'Network kernel calculated'
+        else:
+            kernel = None
+            if args.verbose:
+                print 'No network kernel established'
+
     # Construct options dictionary for decomposition
     NBS_options = {'pats_subsample_p' : args.pats_subsample_p, 
                    'gene_subsample_p' : args.gene_subsample_q, 
                    'min_muts' : args.min_muts,
+                   'shuff_network_labels' : args.symmetric_network_normalization,
                    'prop_data' : args.propagate_data, 
                    'prop_alpha' : args.alpha, 
                    'prop_symmetric_norm' : args.symmetric_network_normalization, 
@@ -199,7 +233,7 @@ if __name__ == "__main__":
     Hlist = []
     for i in range(args.niter):
         netNMF_time = time.time()
-        Hlist.append(pyNBS_single.NBS_single(sm_mat, NBS_options, propNet=network, regNet_glap=knnGlap, verbose=False, save_path=args.save_H))
+        Hlist.append(pyNBS_single.NBS_single(sm_mat, NBS_options, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, verbose=False, save_path=args.save_H))
         if args.verbose:
             print 'NBS iteration:', i+1, 'complete:', time.time()-netNMF_time, 'seconds'
 
@@ -207,7 +241,15 @@ if __name__ == "__main__":
     if args.consensus_cluster:
         NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, args.K, assign_cluster=args.assign_clusters)
     if args.verbose:
-        print 'Consensus Clustering complete'
+        print 'Consensus Clustering complete'        
+    if args.save_co_cluster_matrix is not None:
+        NBS_cc_table.to_csv(args.save_co_cluster_matrix)
+        if args.verbose:
+            print 'Co-clustering matrix saved'
+    if args.save_cluster_assignments is not None:
+        NBS_cluster_assign.to_csv(args.save_cluster_assignments)
+        if args.verbose:
+            print 'Cluster assignments saved'
 
     # Plot Consensus Cluster Map
     if args.plot_co_cluster_map:

@@ -2,6 +2,7 @@
 # ---------- NBS Plotting Functions ---------- #
 ################################################
 import pandas as pd
+import numpy as np
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -88,5 +89,6 @@ def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=
     # Save KM plot
     if save_path is not None:
         plt.savefig(save_path, bbox_inches='tight')
-    else:
-        return
+    if lr_test:
+        return p
+    return
