@@ -22,7 +22,7 @@ setup(
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python :: 2.7'
 	],
-	packages=find_packages(exclude=['os', 'time']),
+	packages=find_packages(exclude=['os', 'multiprocessing', 'random', 'time']),
 	install_requires=[
         'argparse>=1.1',
         'lifelines>=0.9.1',

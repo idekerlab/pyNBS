@@ -9,6 +9,7 @@ import scipy.stats as stats
 import numpy as np
 import numpy.matlib as matlib
 from scipy.optimize import nnls
+from multiprocessing import Pool
 import time
 
 # Function to construct the KNN regularization network graph laplacian
@@ -99,6 +100,10 @@ def qnorm(data):
         df_out[col] = [ranked_avgs[i-1] for i in t]
     return df_out.T
 
+# Helper function for computing non-negative least squares solution
+def nnls_single(solution_vect):
+    return nnls(factor_matrix, solution_vect)[0]
+
 # Adapted from Matan Hofree's Matlab code in NBS
 # data = features-by-samples propagated (or not) mutation profiles
 # KNN_glap = Graph laplacian of regularization network
@@ -115,11 +120,9 @@ def qnorm(data):
 #   err_delta_tol = Maximum change in reconstruction error allowed for break
 #   niter = Maximum number of iterations to execute before break
 # verbose = print statements on update progress
-# debug_mode = Returns intermediate values during updating if desired
-def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, 
-                 gamma=1000, update_gamma=True, gamma_factor=1, 
-                 niter=250, eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, 
-                 verbose=True, debug_mode=False):
+# debug_mode = Returns intermediate values during updating if desired   
+def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_gamma=False, gamma_factor=1, 
+                 niter=250, eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=True, debug_mode=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H
@@ -135,24 +138,24 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None,
         W = np.maximum(W_init, eps)
     else:
         W = np.copy(W_init)
+    global factor_matrix
+    factor_matrix = W        
     if verbose:
         print 'W and H matrices initialized'
+    
     # Get graph matrices from laplacian array
     D = np.diag(np.diag(KNN_glap)).astype(float)
     A = (D-KNN_glap).astype(float)
     if verbose:
         print 'D and A matrices calculated'
-    
     # Set mixed netNMF reporting variables
     optGammaIterMin, optGammaIterMax = 0, niter/2
     if debug_mode:
         resVal, resVal_Kreg, fitResVect, fitGamma, Wlist, Hlist = [], [], [], [], [], []
     XfitPrevious = np.inf
-
+    
     # Updating W and H
     for i in range(niter):
-        KWmat = np.dot(KNN_glap, W)
-        Kres = np.trace(np.dot(W.T, KWmat)) # Un-scaled regularization term (originally sqrt of this value is taken)
         XfitThis = np.dot(W, H)
         WHres = np.linalg.norm(data-XfitThis) # Reconstruction error
 
@@ -165,13 +168,15 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None,
         # Tracking reconstruction errors and residuals
         if debug_mode:
             resVal.append(WHres)
-            resVal_Kreg.append(Kres)
             fitResVect.append(fitRes)
             fitGamma.append(gamma)
             Wlist.append(W)
             Hlist.append(H)
         if (verbose) & (i%10==0):
-            print 'Iteration >>', i, 'Mat-res:', WHres, 'K-res:', np.sqrt(Kres), 'Sum:', WHres+np.sqrt(Kres), 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
+            if update_gamma:
+                print 'Iteration >>', i, 'Mat-res:', WHres, 'K-res:', Kres, 'Sum:', WHres+np.sqrt(Kres), 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
+            else:
+                print 'Iteration >>', i, 'Mat-res:', WHres, 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
         if (err_delta_tol > fitRes) | (err_tol > WHres) | (i+1 == niter):
             if verbose:
                 print 'NMF completed!'
@@ -184,6 +189,11 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None,
 
         # Update Gamma
         if (update_gamma==True) & (gamma_factor!=0) & (i+1 <= optGammaIterMax) & (i+1 > optGammaIterMin):
+            # Un-scaled regularization term (originally sqrt of this value is taken)
+            KWmat = np.dot(KNN_glap, W)
+            Kres = np.trace(np.dot(W.T, KWmat)) 
+            if debug_mode:
+                resVal_Kreg.append(Kres)
             new_gamma = round((WHres/np.sqrt(Kres))*gamma_factor)
             gamma = new_gamma
         # Terms to be scaled by gamma
@@ -194,8 +204,10 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None,
         W = W*((np.dot(data, H.T) + gamma*KWmat_W + eps) / (np.dot(W,np.dot(H,H.T)) + gamma*KWmat_D + eps))
         W = np.maximum(W, eps)
         W = W/matlib.repmat(np.maximum(sum(W),eps),len(W),1);        
+        factor_matrix = W
+        
         # Update H
-        H = np.array([nnls(W, data[:,j])[0] for j in range(data.shape[1])]).T 
+        H = np.array([nnls(W, data[:,j])[0] for j in range(c)]).T 
         # ^ Matan uses a custom fast non-negative least squares solver here, we will use scipy's implementation here
         H=np.maximum(H,eps)
     

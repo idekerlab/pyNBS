@@ -76,7 +76,11 @@ if __name__ == "__main__":
 
     # Parameters for loading molecular network
     parser.add_argument('-nd', '--net_filedelim', type=str, default='\t', required=False,
-        help='Delimiter used in network file between columns. Default is tab white space.')    
+        help='Delimiter used in network file between columns. Default is tab white space.') 
+    parser.add_argument('-sdp', '--degree_preserved_shuffle', default=False, action="store_true", required=False,
+        help='Determination of whether or not to shuffle the network edges (while preserving node degree) when loading network.')    
+    parser.add_argument('-snl', '--node_label_shuffle', default=False, action="store_true", required=False,
+        help='Determination of whether or not to shuffle the network node labels (while preserving network topology) when loading network.')
 
     # Parameters for calculating regularization network
     parser.add_argument('-reg', '--regularize_network', action="store_true", required=False,
@@ -99,8 +103,6 @@ if __name__ == "__main__":
         help='Proportion of mutated genes to sub-sample')    
     parser.add_argument('-mm', '--min_muts', type=positive_int, default=10, required=False,
         help='Minimum number of mutations for a sample to contain after sub-sampling to be considered for further analysis.')
-    parser.add_argument('-snl', '--shuffle_network_labels', default=False, action="store_true", required=False,
-        help='Determination of whether or not to shuffle the network node labels by shuffling the sub-sampled mutation data column labels.')
 
     # Parameters for network propagation
     parser.add_argument('-prop', '--propagate_data', type=bool, default=True, required=False,
@@ -175,7 +177,8 @@ if __name__ == "__main__":
     # Load somatic mutation data
     sm_mat = dit.load_binary_mutation_data(args.sm_data_file, filetype=args.mut_filetype, delimiter=args.mut_filedelim, verbose=args.verbose)
     # Load network
-    network = dit.load_network_file(args.network_path, delimiter=args.net_filedelim, verbose=args.verbose)
+    network = dit.load_network_file(args.network_path, delimiter=args.net_filedelim, degree_shuffle=args.degree_preserved_shuffle, 
+                                    label_shuffle=args.node_label_shuffle, verbose=args.verbose)
     
     # Get knnGlap
     if args.regularize_network:
@@ -215,7 +218,6 @@ if __name__ == "__main__":
     NBS_options = {'pats_subsample_p' : args.pats_subsample_p, 
                    'gene_subsample_p' : args.gene_subsample_q, 
                    'min_muts' : args.min_muts,
-                   'shuff_network_labels' : args.symmetric_network_normalization,
                    'prop_data' : args.propagate_data, 
                    'prop_alpha' : args.alpha, 
                    'prop_symmetric_norm' : args.symmetric_network_normalization, 
@@ -233,27 +235,29 @@ if __name__ == "__main__":
     Hlist = []
     for i in range(args.niter):
         netNMF_time = time.time()
-        Hlist.append(pyNBS_single.NBS_single(sm_mat, NBS_options, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, verbose=False, save_path=args.save_H))
+        Hlist.append(pyNBS_single.NBS_single(sm_mat, NBS_options, propNet=network, propNet_kernel=kernel, 
+                                             regNet_glap=knnGlap, verbose=False, save_path=args.save_H))
         if args.verbose:
             print 'NBS iteration:', i+1, 'complete:', time.time()-netNMF_time, 'seconds'
 
     # Consensus Clustering
     if args.consensus_cluster:
         NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, args.K, assign_cluster=args.assign_clusters)
-    if args.verbose:
-        print 'Consensus Clustering complete'        
-    if args.save_co_cluster_matrix is not None:
-        NBS_cc_table.to_csv(args.save_co_cluster_matrix)
         if args.verbose:
-            print 'Co-clustering matrix saved'
-    if args.save_cluster_assignments is not None:
-        NBS_cluster_assign.to_csv(args.save_cluster_assignments)
-        if args.verbose:
-            print 'Cluster assignments saved'
+            print 'Consensus Clustering complete'        
+        if args.save_co_cluster_matrix is not None:
+            NBS_cc_table.to_csv(args.save_co_cluster_matrix)
+            if args.verbose:
+                print 'Co-clustering matrix saved'
+        if args.save_cluster_assignments is not None:
+            NBS_cluster_assign.to_csv(args.save_cluster_assignments)
+            if args.verbose:
+                print 'Cluster assignments saved'
 
     # Plot Consensus Cluster Map
     if args.plot_co_cluster_map:
         NBS_cluster_assign_cmap = plot.cluster_color_assign(NBS_cluster_assign, name='Cluster Assignment')
-        plot.plot_cc_map(NBS_cc_table, NBS_cc_linkage, title=args.plot_title, row_color_map=None, col_color_map=NBS_cluster_assign_cmap, save_path=args.save_co_cluster_map)
-    if args.verbose:
-        print 'Consensus Clustering map saved'
+        plot.plot_cc_map(NBS_cc_table, NBS_cc_linkage, title=args.plot_title, row_color_map=None, 
+                         col_color_map=NBS_cluster_assign_cmap, save_path=args.save_co_cluster_map)
+        if args.verbose:
+            print 'Consensus Clustering map saved'

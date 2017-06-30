@@ -19,7 +19,6 @@ def NBS_single(sm_mat, options, propNet=None, propNet_kernel=None, regNet_glap=N
     NBS_options = {'pats_subsample_p':0.8, 
                    'gene_subsample_p':0.8, 
                    'min_muts':10,
-                   'shuff_network_labels':False,
                    'prop_data':True, 
                    'prop_alpha':0.7, 
                    'prop_symmetric_norm':False, 
@@ -56,12 +55,6 @@ def NBS_single(sm_mat, options, propNet=None, propNet_kernel=None, regNet_glap=N
                                              min_muts=NBS_options['min_muts'])
     if verbose:
         print 'Somatic mutation data sub-sampling complete'
-
-    # Shuffle network labels
-    if NBS_options['shuff_network_labels']:
-        shuff_node_order = list(sm_mat_subsample.columns)
-        random.shuffle(shuff_node_order)
-        sm_mat_subsample.columns = shuff_node_order
 
     # Propagate Data
     if NBS_options['prop_data']:

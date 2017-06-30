@@ -6,6 +6,54 @@ import pandas as pd
 import networkx as nx
 import time
 import os
+import random
+
+# Load network from file as unweighted network
+# Can set delimiter, but default delimiter is tab
+# Only will read edges as first two columns, all other columns will be ignored
+# There are also options to shuffle the network to be loaded if desired (testing randomized network controls)
+def load_network_file(network_file_path, delimiter='\t', degree_shuffle=False, label_shuffle=False, verbose=False):
+    network = nx.read_edgelist(network_file_path, delimiter=delimiter, data=False)
+    if verbose:
+        print 'Network File Loaded:', network_file_path
+    if degree_shuffle:
+        network = degree_shuffNet(network, verbose=verbose)
+    if label_shuffle:
+        network = label_shuffNet(network, verbose=verbose)
+    return network
+
+# Shuffle network by preserving node-degree
+def degree_shuffNet(network, verbose=False):
+	shuff_time = time.time()
+	edge_len=len(network.edges())
+	shuff_net=network.copy()
+	try:
+		nx.double_edge_swap(shuff_net, nswap=edge_len, max_tries=edge_len*10)
+	except:
+		if verbose:
+			print 'Note: Maximum number of swap attempts ('+repr(edge_len*10)+') exceeded before desired swaps achieved ('+repr(edge_len)+').'
+	if verbose:
+		# Evaluate Network Similarity
+		shared_edges = len(set(network.edges()).intersection(set(shuff_net.edges())))
+		print 'Network shuffled:', time.time()-shuff_time, 'seconds. Edge similarity:', shared_edges/float(edge_len)
+	return shuff_net
+
+# Shuffle network by permuting network node labels
+def label_shuffNet(network, verbose=False):
+    shuff_time = time.time()
+    edge_len=len(network.edges())
+    # Permute node labels
+    network_nodes = network.nodes()
+    shuff_nodes = list(network_nodes)
+    for i in range(10):
+        random.shuffle(shuff_nodes)
+    network_relabel_map = {network_nodes[i]:shuff_nodes[i] for i in range(len(network_nodes))}    
+    shuff_net = nx.relabel_nodes(network, network_relabel_map, copy=True)
+    if verbose:
+        # Evaluate Network Similarity
+        shared_edges = len(set(network.edges()).intersection(set(shuff_net.edges())))
+        print 'Network shuffled:', time.time()-shuff_time, 'seconds. Edge similarity:', shared_edges/float(edge_len)
+    return shuff_net    	
 
 # Filter extended sif file where all edges are weighted by a specific quantile
 # Return the filtered network edge list and save it to a file if desired (for import by load_network_file)
@@ -23,15 +71,6 @@ def filter_weighted_network(network_file_path, nodeA_col=0, nodeB_col=1, score_c
     if save_path is not None:
         data_filt.to_csv(save_path, sep='\t', header=False, index=False)
     return data_filt
-
-# Load network from file as unweighted network
-# Can set delimiter, but default delimiter is tab
-# Only will read edges as first two columns, all other columns will be ignored
-def load_network_file(network_file_path, delimiter='\t', verbose=False):
-	network = nx.read_edgelist(network_file_path, delimiter=delimiter, data=False)
-	if verbose:
-		print 'Network File Loaded:', network_file_path
-	return network
 
 # Convert and save MAF from Broad Firehose
 # Can produce 2 types of filetypes: 'matrix' or 'list', matrix is a full samples-by-genes binary csv, 'list' is a sparse representaiton of 'matrix'
