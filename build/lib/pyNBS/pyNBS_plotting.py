@@ -4,7 +4,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use('agg', warn=False)
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from lifelines import KaplanMeierFitter

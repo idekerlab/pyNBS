@@ -1,0 +1,249 @@
+TCGA_patient_barcode,HM90_K6,Stage,Gender,Vital_status,Days_survival,Age_at_diagnosis,Residual_tumor_after_surgery,Grade,Histological_code_ICD03,ICD10_code
+TCGA-A5-A0G3,1,iii,female,living,1079,61,r0,High Grade,8441/3,c54.1
+TCGA-A5-A0G5,1,i,female,living,790,73,r0,High Grade,8310/3,c54.1
+TCGA-A5-A0GD,1,i,female,living,97,75,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GJ,1,i,female,living,1447,44,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GN,1,i,female,living,1477,65,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0R6,1,iii,female,living,369,64,r0,High Grade,8441/3,c54.1
+TCGA-AJ-A23M,1,ii,female,living,31,61,NA,High Grade,8441/3,c54.1
+TCGA-AP-A052,1,iv,female,deceased,669,59,r2,High Grade,8441/3,c54.1
+TCGA-AP-A053,1,i,female,living,181,90,r0,High Grade,8380/3,c54.1
+TCGA-AP-A05A,1,ii,female,living,1198,81,r0,High Grade,8441/3,c54.1
+TCGA-AP-A05D,1,iii,female,living,1364,67,r0,High Grade,8441/3,c54.1
+TCGA-AP-A05H,1,i,female,living,831,75,r0,High Grade,8441/3,c54.1
+TCGA-AP-A05J,1,ii,female,living,639,66,r0,High Grade,8441/3,c54.1
+TCGA-AP-A0L8,1,iii,female,deceased,1484,70,r0,High Grade,8441/3,c54.1
+TCGA-AP-A0L9,1,i,female,living,3443,71,r0,High Grade,8441/3,c54.1
+TCGA-AP-A0LF,1,iv,female,living,103,82,r2,High Grade,8380/3,c54.1
+TCGA-AP-A0LH,1,i,female,deceased,1106,60,r0,High Grade,8441/3,c54.1
+TCGA-AP-A0LI,1,iii,female,living,2602,67,r2,High Grade,8441/3,c54.1
+TCGA-AP-A1DQ,1,iii,female,living,1184,76,r0,High Grade,8380/3,c54.1
+TCGA-AX-A064,1,ii,female,living,1064,81,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A06B,1,ii,female,living,1639,72,r0,High Grade,8380/3,c54.1
+TCGA-AX-A0IU,1,iii,female,living,868,79,r0,High Grade,8441/3,c54.1
+TCGA-AX-A0IW,1,iii,female,living,1148,67,r0,High Grade,8441/3,c54.1
+TCGA-AX-A1C7,1,i,female,living,515,77,r0,High Grade,8441/3,c54.1
+TCGA-AX-A1C8,1,iii,female,living,412,77,r1,High Grade,8441/3,c54.1
+TCGA-AX-A1CP,1,i,female,living,1107,84,r1,High Grade,8441/3,c54.1
+TCGA-AX-A2H5,1,iii,female,living,2167,67,r1,High Grade,8441/3,c54.1
+TCGA-AX-A2HF,1,i,female,living,489,67,r0,High Grade,8441/3,c54.1
+TCGA-B5-A0JN,1,iv,female,living,2068,84,NA,High Grade,8441/3,c54.1
+TCGA-B5-A0K3,1,i,female,living,700,62,NA,High Grade,8380/3,c54.1
+TCGA-B5-A0K8,1,i,female,living,542,71,NA,High Grade,8441/3,c54.1
+TCGA-B5-A11I,1,iv,female,living,2038,65,NA,High Grade,8140/3,c54.1
+TCGA-B5-A11S,1,i,female,living,650,63,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A1MU,1,iv,female,deceased,1547,79,NA,High Grade,8441/3,c54.1
+TCGA-B5-A1MY,1,iii,female,deceased,361,62,NA,High Grade,8441/3,c54.1
+TCGA-BG-A0M6,1,iii,female,living,241,73,r0,High Grade,8441/3,c54.1
+TCGA-BG-A0M8,1,i,female,living,690,50,r0,High Grade,8380/3,c54.1
+TCGA-BG-A0MO,1,i,female,living,1021,63,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0YV,1,iii,female,living,186,67,r0,High Grade,8441/3,c54.1
+TCGA-BG-A18C,1,i,female,living,169,72,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A2AE,1,i,female,living,16,57,NA,High Grade,8441/3,c54.1
+TCGA-BK-A0CC,1,iii,female,living,211,69,rx,High Grade,8460/3,c54.1
+TCGA-BK-A139,1,i,female,living,239,74,r0,High Grade,8380/3,c54.1
+TCGA-BS-A0TI,1,i,female,living,1443,64,r0,High Grade,8380/3,NA
+TCGA-BS-A0U9,1,ii,female,living,1749,59,rx,High Grade,8380/3,NA
+TCGA-D1-A0ZP,1,iv,female,living,690,59,rx,High Grade,8441/3,c54.1
+TCGA-D1-A0ZZ,1,i,female,living,377,80,r0,High Grade,8380/3,c54.1
+TCGA-D1-A15V,1,i,female,living,1012,68,r0,High Grade,8441/3,c54.1
+TCGA-D1-A169,1,iv,female,living,905,63,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16G,1,iv,female,deceased,834,74,rx,High Grade,8441/3,c54.1
+TCGA-D1-A16I,1,i,female,deceased,349,62,r0,High Grade,8441/3,c54.1
+TCGA-D1-A16J,1,ii,female,living,742,61,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16N,1,iii,female,living,640,51,r0,High Grade,8380/3,c54.1
+TCGA-D1-A16S,1,iii,female,living,238,70,r0,High Grade,8441/3,c54.1
+TCGA-D1-A17K,1,i,female,living,429,74,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A1NU,1,i,female,living,311,74,r0,High Grade,8441/3,c54.1
+TCGA-D1-A1NX,1,iii,female,living,399,66,r0,High Grade,8441/3,c54.1
+TCGA-DI-A1NN,1,iii,female,living,943,63,r0,High Grade,8441/3,c54.1
+TCGA-E6-A1LZ,1,i,female,living,1289,76,r0,High Grade,8441/3,c54.1
+TCGA-EO-A1Y5,1,iii,female,living,332,63,r0,High Grade,8441/3,c54.1
+TCGA-EO-A1Y8,1,i,female,living,328,87,r0,High Grade,8441/3,c54.1
+TCGA-EY-A1GS,1,iv,female,living,284,71,r2,High Grade,8441/3,c54.1
+TCGA-EY-A212,1,iii,female,living,109,83,r0,High Grade,8460/3,c54.1
+TCGA-FI-A2D2,1,i,female,living,1095,66,r0,High Grade,8441/3,c54.1
+TCGA-FI-A2EW,1,ii,female,living,1795,71,r0,High Grade,8441/3,c54.1
+TCGA-FI-A2EX,1,iii,female,living,276,58,r0,High Grade,8441/3,c54.1
+TCGA-FI-A2F8,1,ii,female,living,761,64,r0,High Grade,8441/3,c54.1
+TCGA-A5-A0G9,2,i,female,living,2165,79,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0GA,2,iii,female,deceased,543,67,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0GB,2,i,female,living,275,65,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0GH,2,i,female,living,1671,57,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0GP,2,i,female,living,1087,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GW,2,i,female,living,385,46,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0VP,2,i,female,living,927,74,r0,High Grade,8380/3,c54.1
+TCGA-AP-A051,2,i,female,living,2545,69,r0,High Grade,8380/3,c54.1
+TCGA-AP-A054,2,iii,female,deceased,709,64,r1,High Grade,8380/3,c54.1
+TCGA-AP-A056,2,ii,female,living,2026,64,r0,High Grade,8380/3,c54.1
+TCGA-AP-A059,2,i,female,living,250,69,r0,High Grade,8380/3,c54.1
+TCGA-AP-A05N,2,i,female,living,239,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LD,2,i,female,living,2906,63,r0,High Grade,8380/3,c54.1
+TCGA-AP-A0LE,2,i,female,living,2986,57,r0,High Grade,8380/3,c54.1
+TCGA-AP-A0LG,2,i,female,living,1921,54,r0,High Grade,8380/3,c54.1
+TCGA-AP-A0LM,2,iii,female,living,825,33,r0,High Grade,8380/3,c54.1
+TCGA-AP-A0LT,2,ii,female,living,1185,57,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A05S,2,iii,female,deceased,413,81,r2,High Grade,8380/3,c54.1
+TCGA-AX-A05Z,2,iii,female,living,1413,37,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A060,2,i,female,living,1075,77,r1,High Grade,8380/3,c54.1
+TCGA-AX-A063,2,i,female,living,2024,63,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A06H,2,iii,female,living,833,60,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A0J0,2,i,female,living,1219,47,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A0J1,2,i,female,living,2004,80,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0JR,2,i,female,living,1465,73,NA,High Grade,8380/3,c54.1
+TCGA-B5-A0JV,2,i,female,living,1125,63,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0JY,2,iii,female,living,821,50,NA,High Grade,8020/3,c54.1
+TCGA-B5-A0JZ,2,iii,female,living,689,60,NA,High Grade,8380/3,c54.1
+TCGA-B5-A0K2,2,iii,female,living,682,54,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K6,2,i,female,living,426,58,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K9,2,ii,female,living,166,88,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11E,2,i,female,living,265,53,NA,High Grade,8380/3,c54.1
+TCGA-B5-A11G,2,i,female,living,3076,71,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11H,2,iii,female,living,2317,67,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11J,2,i,female,living,1291,64,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11N,2,i,female,living,1147,69,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11O,2,i,female,living,1034,62,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11R,2,ii,female,living,837,51,NA,High Grade,8380/3,c54.1
+TCGA-B5-A11U,2,iv,female,living,271,74,NA,High Grade,8380/3,c54.1
+TCGA-B5-A11Y,2,i,female,living,315,59,NA,"Low grade (1,2)",8382/3,c54.1
+TCGA-BG-A0LX,2,i,female,living,252,57,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0M0,2,i,female,living,237,66,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0M4,2,i,female,living,480,60,r0,High Grade,8380/3,c54.1
+TCGA-BG-A0M9,2,i,female,living,765,73,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MQ,2,i,female,living,761,71,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0VW,2,i,female,living,131,77,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0VZ,2,iii,female,living,868,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A18B,2,i,female,living,155,53,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BK-A0C9,2,i,female,living,289,57,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BS-A0TA,2,iv,female,living,714,58,rx,High Grade,8380/3,c54.1
+TCGA-BS-A0TC,2,i,female,living,2260,69,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0TE,2,iv,female,deceased,146,35,r2,High Grade,8380/3,c54.9
+TCGA-BS-A0TJ,2,i,female,living,1514,59,r0,High Grade,8380/3,NA
+TCGA-BS-A0U7,2,i,female,deceased,934,63,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BS-A0U8,2,iii,female,living,2606,55,NA,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UA,2,i,female,living,2540,68,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UF,2,i,female,living,1843,65,r0,High Grade,8380/3,NA
+TCGA-BS-A0UJ,2,i,female,living,27,68,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UL,2,i,female,living,36,54,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UM,2,i,female,living,2191,64,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UV,2,iii,female,living,149,55,r0,High Grade,8380/3,NA
+TCGA-D1-A0ZO,2,i,female,living,69,75,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A0ZS,2,i,female,living,147,54,r0,High Grade,8380/3,c54.1
+TCGA-D1-A101,2,i,female,living,53,60,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A103,2,i,female,living,480,87,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A15X,2,i,female,living,909,45,r0,High Grade,8441/3,c54.1
+TCGA-D1-A163,2,iii,female,living,938,50,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A167,2,i,female,living,478,70,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16F,2,i,female,living,80,60,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16X,2,i,female,living,111,54,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16Y,2,i,female,living,532,56,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A174,2,i,female,living,324,51,r0,High Grade,8380/3,c54.1
+TCGA-D1-A176,2,i,female,living,506,67,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A177,2,i,female,living,347,70,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17A,2,ii,female,living,19,59,r0,High Grade,8380/3,c54.1
+TCGA-D1-A17B,2,i,female,living,212,69,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17D,2,i,female,living,160,58,r0,High Grade,8380/3,c54.1
+TCGA-D1-A17F,2,i,female,living,39,68,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17H,2,i,female,living,454,61,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17M,2,ii,female,living,311,56,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17Q,2,i,female,living,54,54,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17U,2,iii,female,living,396,53,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-DI-A0WH,2,i,female,living,405,64,r0,High Grade,8380/3,c54.1
+TCGA-A5-A0GE,3,i,female,living,2717,38,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GI,3,i,female,living,1750,63,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GM,3,i,female,living,1448,53,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GQ,3,i,female,living,1167,76,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GU,3,i,female,living,495,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GV,3,i,female,living,485,67,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0GX,3,i,female,living,924,53,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0R7,3,i,female,living,40,55,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0R8,3,i,female,living,125,81,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0R9,3,i,female,living,294,51,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0RA,3,i,female,living,555,68,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0VO,3,i,female,living,128,64,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-A5-A0VQ,3,i,female,living,177,62,r0,High Grade,8380/3,c54.1
+TCGA-AP-A05P,3,i,female,living,260,54,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LJ,3,i,female,living,965,42,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LL,3,i,female,living,2141,56,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LN,3,i,female,living,1992,56,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LO,3,i,female,deceased,1016,45,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LP,3,i,female,living,1875,76,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LQ,3,i,female,living,1906,59,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AP-A0LV,3,i,female,living,385,39,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A05T,3,i,female,living,603,82,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A05U,3,i,female,living,902,56,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A05W,3,ii,female,living,2078,60,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A05Y,3,i,female,living,2191,57,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A062,3,i,female,living,1398,53,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A06L,3,i,female,living,1479,63,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-AX-A0IS,3,i,female,living,1065,52,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0JS,3,i,female,living,1241,54,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0JT,3,iii,female,living,1312,63,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K0,3,i,female,living,679,48,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K1,3,i,female,living,746,69,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K4,3,i,female,living,466,51,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A0K7,3,i,female,living,372,64,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11F,3,i,female,living,5279,55,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11M,3,i,female,living,1117,43,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11Q,3,iii,female,living,702,64,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11V,3,i,female,living,231,64,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11W,3,i,female,living,339,61,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A11X,3,iii,female,living,337,66,NA,High Grade,8020/3,c54.1
+TCGA-B5-A11Z,3,i,female,living,291,61,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-B5-A121,3,iii,female,living,259,57,NA,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0LW,3,i,female,living,194,47,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0M2,3,i,female,living,316,62,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0M3,3,i,female,living,742,74,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0M7,3,iii,female,living,698,60,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MC,3,i,female,living,827,74,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MG,3,i,female,living,896,73,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MI,3,i,female,deceased,714,83,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MS,3,iii,female,living,553,53,r0,High Grade,8380/3,c54.1
+TCGA-BG-A0MT,3,i,female,living,240,64,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0MU,3,iii,female,living,231,78,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0RY,3,i,female,living,128,68,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0VT,3,iii,female,living,224,56,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0VV,3,i,female,living,260,53,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0VX,3,i,female,living,490,58,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0W1,3,ii,female,living,907,89,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0W2,3,i,female,living,1151,57,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A0YU,3,i,female,living,279,37,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A186,3,iii,female,living,230,61,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A187,3,i,female,living,231,65,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BG-A18A,3,i,female,living,252,74,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-BK-A0CA,3,iii,female,living,371,61,rx,High Grade,8441/3,c54.1
+TCGA-BK-A0CB,3,iii,female,living,188,60,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BK-A13C,3,i,female,living,202,47,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-BS-A0T9,3,iv,female,deceased,1428,39,r2,High Grade,8380/3,c54.1
+TCGA-BS-A0TD,3,i,female,living,2002,65,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0TG,3,iii,female,living,2034,60,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0U5,3,i,female,living,2204,76,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0UT,3,ii,female,living,595,62,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0V6,3,i,female,living,1650,55,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0V7,3,i,female,living,1429,48,r0,"Low grade (1,2)",8380/3,NA
+TCGA-BS-A0V8,3,ii,female,living,1507,68,r1,"Low grade (1,2)",8380/3,c54.1
+TCGA-BS-A0WQ,3,i,female,living,1207,55,r0,"Low grade (1,2)",8380/3,NA
+TCGA-D1-A0ZN,3,i,female,living,512,60,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A0ZQ,3,i,female,living,8,90,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A0ZR,3,i,female,living,17,57,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A0ZU,3,i,female,living,578,34,r0,"Low grade (1,2)",8382/3,c54.1
+TCGA-D1-A0ZV,3,i,female,living,350,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A102,3,i,female,living,43,49,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A15W,3,iii,female,living,915,58,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A15Z,3,i,female,deceased,58,72,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A160,3,i,female,living,112,70,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A161,3,i,female,living,892,78,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A165,3,iii,female,living,20,64,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A168,3,i,female,living,913,67,r0,High Grade,8380/3,c54.1
+TCGA-D1-A16B,3,i,female,living,744,64,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16D,3,i,female,living,908,49,rx,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16E,3,i,female,living,909,73,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16O,3,i,female,living,864,44,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16Q,3,ii,female,living,221,54,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A16R,3,i,female,living,21,39,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17C,3,i,female,living,1,78,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17L,3,i,female,living,459,81,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17N,3,i,female,living,46,46,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17R,3,i,female,deceased,400,58,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17S,3,i,female,living,326,59,r0,"Low grade (1,2)",8380/3,c54.1
+TCGA-D1-A17T,3,i,female,living,70,67,r0,"Low grade (1,2)",8380/3,c54.1

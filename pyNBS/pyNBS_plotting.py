@@ -31,7 +31,7 @@ def plot_cc_map(cc_table, linkage, title=None, row_color_map=None, col_color_map
                         cmap='Blues', cbar_kws={'label': 'Co-Clustering'},
                         row_colors=row_color_map, col_colors=col_color_map, 
                         **{'xticklabels':'False', 'yticklabels':'False'})
-    cg.cax.set_position([0.92, .12, .03, .59])
+    cg.cax.set_position([0.92, .11, .03, .584])
     cg.ax_heatmap.set_xlabel('')
     cg.ax_heatmap.set_xticks([])
     cg.ax_heatmap.set_ylabel('')
