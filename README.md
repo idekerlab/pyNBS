@@ -19,7 +19,7 @@ pyNBS requires:
 
 Note:
 - Lifelines is not availble on Anaconda. It can be installed via ```pip```. See [Linefiles documentation](https://lifelines.readthedocs.io/en/latest/) for details.
-- In Pandas v0.20.0+, the ```.ix```indexer has be deprecated. There may be warning regarding this issue, yet the function still works.
+- In Pandas v0.20.0+, the ```.ix```indexer has been deprecated. There may be warning regarding this issue, yet the function still works.
 
 ### Installation
 1. Clone the repository 
