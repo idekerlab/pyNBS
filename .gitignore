@@ -22,6 +22,7 @@
 *.zip
 
 # Directories 
+.gitignore
 .ipynb_checkpoints/*
 build/*
 dist/
