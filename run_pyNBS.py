@@ -69,7 +69,7 @@ if __name__ == "__main__":
         help='Verbosity flag for reporting on patient similarity network construction steps.')
 
     # Parameters for loading somatic mutation data
-    parser.add_argument('-mf', '--mut_filetype', type=str, default='matrix', choices=['matrix', 'list'], required=False,
+    parser.add_argument('-mf', '--mut_filetype', type=str, default='list', choices=['matrix', 'list'], required=False,
         help='File structure of binary mutation data. 2 options: "matrix" (e.g. csv or tsv) or "list" (2-column list). Typically reading a "list" is faster.')
     parser.add_argument('-md', '--mut_filedelim', type=str, default='\t', required=False,
         help='Delimiter used in binary mutation file. Default is tab white space.')    
