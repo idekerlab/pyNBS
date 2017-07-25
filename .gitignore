@@ -22,6 +22,7 @@
 *.zip
 
 # Directories 
+.ipynb_checkpoints/*
 build/*
 dist/
 pyNBS.egg-info
