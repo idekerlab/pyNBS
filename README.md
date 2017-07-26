@@ -1,6 +1,6 @@
 # pyNBS
 
-This is a python package replicating the network-based stratification algorithm used in the [Nature Methods Hofree et al 2013 paper](https://www.nature.com/nmeth/journal/v10/n11/full/nmeth.2651.html). This Python code repository is proted from [NBS Matlab 0.2.0](http://chianti.ucsd.edu/~mhofree/NBS/).
+This is a python package replicating the network-based stratification algorithm used in the [Nature Methods Hofree et al 2013 paper](https://www.nature.com/nmeth/journal/v10/n11/full/nmeth.2651.html). This Python code repository is ported from [NBS Matlab 0.2.0](http://chianti.ucsd.edu/~mhofree/NBS/).
 
 ## Installing NBS
 ### Version and Dendencies
