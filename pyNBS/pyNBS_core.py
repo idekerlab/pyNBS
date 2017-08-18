@@ -151,11 +151,14 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
     # Set mixed netNMF reporting variables
     optGammaIterMin, optGammaIterMax = 0, niter/2
     if debug_mode:
-        resVal, resVal_Kreg, fitResVect, fitGamma, Wlist, Hlist = [], [], [], [], [], []
+        resVal, resVal_Kreg, fitResVect, fitGamma, timestep, Wlist, Hlist = [], [], [], [], [], [W], [H]
     XfitPrevious = np.inf
     
     # Updating W and H
     for i in range(niter):
+    	if debug_mode:
+    		iter_time = time.time()
+
         XfitThis = np.dot(W, H)
         WHres = np.linalg.norm(data-XfitThis) # Reconstruction error
 
@@ -210,8 +213,12 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
         H = np.array([nnls(W, data[:,j])[0] for j in range(c)]).T 
         # ^ Matan uses a custom fast non-negative least squares solver here, we will use scipy's implementation here
         H=np.maximum(H,eps)
+
+       	# Track each iterations' time step
+       	if debug_mode:
+       		timestep.append(time.time()-iter_time)
     
     if debug_mode:
-        return W, H, numIter, finalResidual, resVal, resVal_Kreg, fitResVect, fitGamma, Wlist, Hlist
+        return W, H, numIter, finalResidual, resVal, resVal_Kreg, fitResVect, fitGamma, Wlist, Hlist, timestep
     else:
         return W, H, numIter, finalResidual
