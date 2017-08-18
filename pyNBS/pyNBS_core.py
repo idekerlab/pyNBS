@@ -151,7 +151,7 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
     # Set mixed netNMF reporting variables
     optGammaIterMin, optGammaIterMax = 0, niter/2
     if debug_mode:
-        resVal, resVal_Kreg, fitResVect, fitGamma, timestep, Wlist, Hlist = [], [], [], [], [], [W], [H]
+        resVal, resVal_Kreg, fitResVect, fitGamma, timestep, Wlist, Hlist = [], [], [], [], [], [], []
     XfitPrevious = np.inf
     
     # Updating W and H
