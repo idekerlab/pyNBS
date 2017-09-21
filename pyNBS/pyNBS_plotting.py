@@ -48,15 +48,20 @@ def plot_cc_map(cc_table, linkage, title=None, row_color_map=None, col_color_map
 # clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
 # cluster_assign ias a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
-def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=None, save_path=None):
+def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=1825, save_path=None):
     # Initialize KM plotter
     kmf = KaplanMeierFitter()
     # Load and format clinical data
-    clin_data = pd.read_csv(clin_data_fn, sep='\t', index_col=0)
-    clin_data = clin_data.T
-    clin_data.index = [index.upper() for index in clin_data.index]
-    surv = clin_data[['vital_status', 'days_to_death', 'days_to_last_followup']].fillna(0)
-    surv['overall_survival'] = surv[['days_to_death', 'days_to_last_followup']].max(axis=1).map(lambda x: int(x))
+
+    # The block below not needed for THESE processed clinical data files (differ from Github)
+    #clin_data = pd.read_csv(clin_data_fn, sep='\t', index_col=0)
+    #clin_data = clin_data.T
+    #clin_data.index = [index.upper() for index in clin_data.index]
+    #surv = clin_data[['vital_status', 'days_to_death', 'days_to_last_followup']].fillna(0)
+    #surv['overall_survival'] = surv[['days_to_death', 'days_to_last_followup']].max(axis=1).map(lambda x: int(x))
+    
+    surv = pd.read_csv(clin_data_fn, sep=',', index_col=0)
+
     # Number of clusters
     clusters = sorted(list(cluster_assign.value_counts().index))
     k = len(clusters)

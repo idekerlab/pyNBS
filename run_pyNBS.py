@@ -156,7 +156,19 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--plot_title', type=str, default=None, required=False,
         help='Title of co-clustering matrix map if desired.')    
     parser.add_argument('-s_map', '--save_co_cluster_map', type=valid_outfile, default=None, required=False,
-        help='File path of where to save co-clustering matrix plot. No path given as default, automatically saves pdf file if file path given.') 
+        help='File path of where to save co-clustering matrix plot. No path given as default, automatically saves pdf file if file path given.')
+
+    # KM plot options (this block is edited and differ from what is on Github)
+    parser.add_argument('-km_plot', '--Kaplan_Meier_plot', type=bool, default=None, required=False,
+        help='Determination of whether or not to save Kaplan-Meier plot.')
+    parser.add_argument('-clin', '--clinical_data', type=str, default=None, required=False,
+        help='File path of patient clinical data. This is required if Kaplan_Meier_plot is True.')
+    parser.add_argument('-km_title', '--Kaplan_Meier_plot_title', type=str, default=None, required=False,
+        help='Title of Kaplan-Meier plot if desired.')
+    parser.add_argument('-s_km', '--save_Kaplan_Meier_plot', type=valid_outfile, default=None, required=False,
+        help='File path of where to save Kaplan-Meier plot. No path given as default, automatically saves pdf file if file path given.') 
+
+
 
     # Error checking parameter conditions
     args = parser.parse_args()
@@ -261,3 +273,8 @@ if __name__ == "__main__":
                          col_color_map=NBS_cluster_assign_cmap, save_path=args.save_co_cluster_map)
         if args.verbose:
             print 'Consensus Clustering map saved'
+
+
+    # Kaplan-Meier Plot (This block of code is edited and differs from what is on Github)
+    if args.Kaplan_Meier_plot:
+        plot.cluster_KMplot(NBS_cluster_assign,clin_data_fn=args.clinical_data,title=args.Kaplan_Meier_plot_title, save_path = args.save_Kaplan_Meier_plot)
