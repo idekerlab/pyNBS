@@ -23,18 +23,20 @@ Note:
 
 ### Installation
 1. Clone the repository 
-2. cd to new respository
+2. ```cd``` to new respository
 3. Execute following command:  
 ```python setup.py install```
 
 ## Running the code 
 There are two ways to execute the NBS code:<br>
 1. From __Jupyter Notebook__. <br>
-```OV_run_pyNBS.ipynb``` and ```UT_run_pyNBS.ipynb```are 2 Jyputer Notebooks that use Ovarian cancer and Uterine cancer data same as [Nature Methods Hofree et al 2013 paper](https://www.nature.com/nmeth/journal/v10/n11/full/nmeth.2651.html) and successfully replicate the paper result using pyNBS. Data can be found in ```data/``` folder. See the ```OV_run_pyNBS.ipynb``` and ```UT_run_pyNBS.ipynb``` jupyter notebook for algorithmic details.
+In folder [Example_Notebooks](https://github.com/huangger/pyNBS/tree/master/Example_Notebooks), We provide 6 example notebooks. ```OV_run_pyNBS_Hofree.ipynb``` and ```UCEC_run_pyNBS_Hofree.ipynb```are 2 Jyputer Notebooks that use Ovarian cancer and Uterine cancer data same as [Nature Methods Hofree et al 2013 paper](https://www.nature.com/nmeth/journal/v10/n11/full/nmeth.2651.html) and successfully replicate the paper result using pyNBS. Data can be found in ```data/``` folder. See the ```OV_run_pyNBS_Hofree.ipynb``` and ```UCEC_run_pyNBS_Hofree.ipynb``` jupyter notebook for algorithmic details.
 2. From __command line__.  <br>
+In folder [Example_Command_Line_Tools](https://github.com/huangger/pyNBS/tree/master/Example_Command_Line_Tools), We provide python script to run pyNBS from terminal. We also provide a bash script templete that runs ```run_pyNBS.py```. <br>
 Execute the following command to view parameter/option documentation:<br>
 ```Python run_pyNBS.py -h``` <br>
-Run ```Python run_pyNBS.py``` with desired parameters and options in documentation.
+Run ```Python run_pyNBS.py``` with desired parameters and options in documentation.<br>
+Or modify  ```example_runpyNBS.sh``` with desired parameters and options and run ```bash example_runpyNBS.sh```. 
 
 ## Issues
 Please feel free to post issues/bug reports. Questions can be sent to jkh013@ucsd.edu
