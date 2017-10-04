@@ -103,7 +103,7 @@ def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=
 # Requires lifelines package
 # Format of clin_data_fn is specific to the file used on Hofree et al analysis
 # clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
-# cluster_assign ias a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
+# cluster_assign is a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
 def cluster_KMplot_Hofree(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=1825, save_path=None):
     # Initialize KM plotter
