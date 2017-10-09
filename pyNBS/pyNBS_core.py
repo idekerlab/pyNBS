@@ -27,6 +27,7 @@ def network_inf_KNN_glap(network, gamma=0.01, kn=11, verbose=False, save_path=No
     # This is significantly faster than the method proposed previously in NBS v0.2.0 to calculate the pseudoinverse
     # of each network component. The graph result may be slightly different, and thus the resulting clustering results.
     # But our analysis suggest that the results are not affected greatly (via OV on HM90 task.)
+    # This implementation also more closely follows the algorithm as described by Hofree et al. and Vandin et al.
     L_inv_arr = np.linalg.inv(L_vandin)
     L_inv = pd.DataFrame(L_inv_arr, index = network_nodes, columns = network_nodes)
     if verbose:
@@ -113,16 +114,14 @@ def nnls_single(solution_vect):
 # W_init = Optional nitial W array (features-by-k)
 # gamma = Network regularization term constant
 # eps = Small number precision
-# update_gamma = Whether or not to update gamma regularization term on the fly
-# gamma_factor = Factor to scale new gamma regularization term by (based on residual value ratios)
 # Loop break conditions:
 #   err_tol = Maximum value of reconstruction error function allowed for break
 #   err_delta_tol = Maximum change in reconstruction error allowed for break
 #   niter = Maximum number of iterations to execute before break
 # verbose = print statements on update progress
 # debug_mode = Returns intermediate values during updating if desired   
-def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_gamma=False, gamma_factor=1, 
-                 niter=250, eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=True, debug_mode=False):
+def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, niter=250, eps=1e-15, 
+                 err_tol=1e-4, err_delta_tol=1e-4, verbose=True, debug_mode=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H
@@ -149,9 +148,8 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
     if verbose:
         print 'D and A matrices calculated'
     # Set mixed netNMF reporting variables
-    optGammaIterMin, optGammaIterMax = 0, niter/2
     if debug_mode:
-        resVal, resVal_Kreg, fitResVect, fitGamma, timestep, Wlist, Hlist = [], [], [], [], [], [], []
+        resVal, resVal_Kreg, fitResVect, timestep, Wlist, Hlist = [], [], [], [], [], []
     XfitPrevious = np.inf
     
     # Updating W and H
@@ -172,14 +170,10 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
         if debug_mode:
             resVal.append(WHres)
             fitResVect.append(fitRes)
-            fitGamma.append(gamma)
             Wlist.append(W)
             Hlist.append(H)
         if (verbose) & (i%10==0):
-            if update_gamma:
-                print 'Iteration >>', i, 'Mat-res:', WHres, 'K-res:', Kres, 'Sum:', WHres+np.sqrt(Kres), 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
-            else:
-                print 'Iteration >>', i, 'Mat-res:', WHres, 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
+            print 'Iteration >>', i, 'Mat-res:', WHres, 'Gamma:', gamma, 'Wfrob:', np.linalg.norm(W)
         if (err_delta_tol > fitRes) | (err_tol > WHres) | (i+1 == niter):
             if verbose:
                 print 'NMF completed!'
@@ -190,16 +184,15 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
             finalResidual = WHres
             break
 
-        # Update Gamma
-        if (update_gamma==True) & (gamma_factor!=0) & (i+1 <= optGammaIterMax) & (i+1 > optGammaIterMin):
-            # Un-scaled regularization term (originally sqrt of this value is taken)
-            KWmat = np.dot(KNN_glap, W)
-            Kres = np.trace(np.dot(W.T, KWmat)) 
-            if debug_mode:
-                resVal_Kreg.append(Kres)
-            new_gamma = round((WHres/np.sqrt(Kres))*gamma_factor)
-            gamma = new_gamma
-        # Terms to be scaled by gamma
+        # Note about this part of the netNMF function:
+        # There used to be a small block of code that would dynamically change gamma
+        # to improve the convergence of the algorithm. We did not see any mathematical
+        # or statistical support to have this block of code here. It seemed to just
+        # add confusion in the final form of the algorithm. Therefore it has been removed.
+        # The default gamma parameter is fine here, but the regularization constant can
+        # be changed by the user if so desired.
+
+        # Terms to be scaled by regularization constant: gamma
         KWmat_D = np.dot(D,W) 
         KWmat_W = np.dot(A,W)
             
@@ -219,6 +212,6 @@ def mixed_netNMF(data, KNN_glap, k, W_init=None, H_init=None, gamma=200, update_
        		timestep.append(time.time()-iter_time)
     
     if debug_mode:
-        return W, H, numIter, finalResidual, resVal, resVal_Kreg, fitResVect, fitGamma, Wlist, Hlist, timestep
+        return W, H, numIter, finalResidual, resVal, resVal_Kreg, fitResVect, Wlist, Hlist, timestep
     else:
         return W, H, numIter, finalResidual

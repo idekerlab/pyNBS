@@ -83,16 +83,12 @@ if __name__ == "__main__":
         help='Determination of whether or not to shuffle the network node labels (while preserving network topology) when loading network.')
 
     # Parameters for calculating regularization network
-    parser.add_argument('-reg', '--regularize_network', action="store_true", required=False,
-        help='Determination of whether or not to calculate influence matrix regularization network for regularized NMF step.')
     parser.add_argument('-g', '--gamma', type=float, default=0.01, required=False,
-        help='Value of adjustment on propagation network graph laplacian to calculate influence matrix for (via Vandin 2011). Used if -reg is True')
+        help='Value of adjustment on propagation network graph laplacian to calculate influence matrix for (via Vandin 2011)')
     parser.add_argument('-kn', '--k_nearest_neighbors', type=positive_int, default=11, required=False,
-        help='Number of nearest neighbors to add to the regularization network during construction. Used if -reg is True.')
+        help='Number of nearest neighbors to add to the regularization network during construction.')
     parser.add_argument('-s_knngl', '--save_knn_glap', type=valid_outfile, default=None, required=False,
         help='File path of where to save graph laplacian for k-nearest-neighbor network constructed from propagation network influence matrix. No path given as default, automatically saves pandas hdf file if file path given.')
-    parser.add_argument('-rngl', '--regularization_network_graph_laplacian_file', type=valid_infile, default=None, required=False,
-        help='Path to regularization network graph laplacian matrix if previously calculated. Required if -reg is False.')
 
     # Parameters for sub-sampling data
     parser.add_argument('-n', '--niter', type=positive_int, default=1000, required=False,
@@ -106,11 +102,7 @@ if __name__ == "__main__":
 
     # Parameters for network propagation
     parser.add_argument('-prop', '--propagate_data', type=bool, default=True, required=False,
-        help='Determination of whether or not to propagate sub-sampled binary mutation data over given molecular network.')
-    parser.add_argument('-cpk', '--calculate_propagation_kernel', default=False, action="store_true", required=False,
-        help='Determination of whether or not to pre-calculate network kernel for network propagation. Highly recommended if no network kernel file is given already and niter > 10.') 
-    parser.add_argument('-kernel', '--propagation_kernel_file', type=valid_infile, default=None, required=False,
-        help='Path to pre-calculated propagation kernel of network. This will save time in the propagation step.')    
+        help='Determination of whether or not to propagate sub-sampled binary mutation data over given molecular network.') 
     parser.add_argument('-a', '--alpha', type=restricted_float, default=0.7, required=False,
         help='Propagation constant to use in the propagation of mutations over molecular network. Range is 0.0-1.0 exclusive.')
     parser.add_argument('-norm', '--symmetric_network_normalization', type=bool, default=False, required=False,
@@ -125,10 +117,6 @@ if __name__ == "__main__":
         help='Number of components to decompose patient mutation data into. Same as the number of clusters of patients to separate data into.')
     parser.add_argument('-netNMF_g', '--netNMF_gamma', type=positive_int, default=200, required=False,
         help='Regularization constant to scale network regularization term in netNMF.')
-    parser.add_argument('-netNMF_ug', '--netNMF_update_gamma', type=bool, default=False, required=False,
-        help='Determination of whether or not to constantly update regularization constant based on balance between reconstruction error and regularization term.')
-    parser.add_argument('-netNMF_gf', '--netNMF_gamma_factor', type=positive_int, default=1, required=False,
-        help='Scaling factor for regularization constant updates if -ug is True.')
     parser.add_argument('-e', '--netNMF_eps', type=float, default=1e-15, required=False,
         help='Epsilon error value to adjust 0 values during multiplicative matrix updates in netNMF')
     parser.add_argument('-netNMF_n', '--netNMF_niter', type=positive_int, default=250, required=False,
@@ -172,13 +160,10 @@ if __name__ == "__main__":
 
     # Error checking parameter conditions
     args = parser.parse_args()
-    # 1. Regularization network path must be provided if not regularizing given network
-    if (not args.regularize_network) & (args.regularization_network_graph_laplacian_file is None):
-        parser.error('Regularization network path is required if not regularizing given molecular network.')
-    # 2. Consensus clustering required to assign clusters
+    # 1. Consensus clustering required to assign clusters
     if (not args.consensus_cluster) & (args.assign_clusters):
         parser.error('Consensus clustering required to assign patient clusters.')
-    # 3. Must be performing consensus clustering and cluster assignments if we want to plot co-clustering matrix
+    # 2. Must be performing consensus clustering and cluster assignments if we want to plot co-clustering matrix
     if args.plot_co_cluster_map:
         if (not args.consensus_cluster) | (not args.assign_clusters):
             parser.error('Consensus clustering and cluster assignments must be done to plot co-clustering matrix.')
@@ -192,39 +177,15 @@ if __name__ == "__main__":
     network = dit.load_network_file(args.network_path, delimiter=args.net_filedelim, degree_shuffle=args.degree_preserved_shuffle, 
                                     label_shuffle=args.node_label_shuffle, verbose=args.verbose)
     
-    # Get knnGlap
-    if args.regularize_network:
-        knnGlap = core.network_inf_KNN_glap(network, gamma=args.gamma, kn=args.k_nearest_neighbors, verbose=args.verbose, save_path=args.save_knn_glap)
-    else:
-        # Load propatagion kernel
-        if args.regularization_network_graph_laplacian_file.endswith('.hdf'):
-            knnGlap = pd.read_hdf(args.regularization_network_graph_laplacian_file)
-        else:
-            knnGlap = pd.read_csv(args.regularization_network_graph_laplacian_file)
-        if args.verbose:
-            print 'Pre-calculated regularization network graph laplacian loaded'
+    # Get network-regularizer for graph-regularized NMF (knnGlap)
+    knnGlap = core.network_inf_KNN_glap(network, gamma=args.gamma, kn=args.k_nearest_neighbors, verbose=args.verbose, save_path=args.save_knn_glap)
     
-    # Get network propagation kernel
-    if args.propagation_kernel_file is not None:
-        # Load propagation kernel
-        if args.propagation_kernel_file.endswith('.hdf'):
-            kernel = pd.read_hdf(args.propagation_kernel_file)
-        else:
-            kernel = pd.read_csv(args.propagation_kernel_file)
-        if args.verbose:
-            print 'Pre-calculated network kernel loaded'
-    else:
-        if args.calculate_propagation_kernel:
-            # Calculate propagation kernel by propagating identity matrix of network
-            network_nodes = network.nodes()
-            network_I = pd.DataFrame(np.identity(len(network_nodes)), index=network_nodes, columns=network_nodes)
-            kernel = prop.network_propagation(network, network_I, args.alpha, verbose=True)  
-            if args.verbose:
-                print 'Network kernel calculated'
-        else:
-            kernel = None
-            if args.verbose:
-                print 'No network kernel established'
+    # Calculate propagation kernel by propagating identity matrix of network
+    network_nodes = network.nodes()
+    network_I = pd.DataFrame(np.identity(len(network_nodes)), index=network_nodes, columns=network_nodes)
+    kernel = prop.network_propagation(network, network_I, args.alpha, verbose=True)  
+    if args.verbose:
+        print 'Network kernel calculated'
 
     # Construct options dictionary for decomposition
     NBS_options = {'pats_subsample_p' : args.pats_subsample_p, 
@@ -236,8 +197,6 @@ if __name__ == "__main__":
                    'qnorm_data' : args.quantile_normalize_data,
                    'netNMF_k' : args.K, 
                    'netNMF_gamma' : args.netNMF_gamma, 
-                   'netNMF_update_gamma' : args.netNMF_update_gamma, 
-                   'netNMF_gamma_factor' : args.netNMF_gamma_factor,
                    'netNMF_niter' : args.netNMF_niter, 
                    'netNMF_eps' : args.netNMF_eps, 
                    'netNMF_err_tol' : args.netNMF_err_tol, 
@@ -277,4 +236,4 @@ if __name__ == "__main__":
 
     # Kaplan-Meier Plot (This block of code is edited and differs from what is on Github)
     if args.Kaplan_Meier_plot:
-        plot.cluster_KMplot(NBS_cluster_assign,clin_data_fn=args.clinical_data,title=args.Kaplan_Meier_plot_title, save_path = args.save_Kaplan_Meier_plot)
+        plot.cluster_KMplot(NBS_cluster_assign, clin_data_fn=args.clinical_data, title=args.Kaplan_Meier_plot_title, save_path = args.save_Kaplan_Meier_plot)

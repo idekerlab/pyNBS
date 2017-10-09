@@ -23,5 +23,5 @@ cluster_assign_file=$result_dir$cancer_type'_'$network_name'_k_'$K'_cluster_assi
 map_file=$result_dir$cancer_type'_'$network_name'_k_'$K'_map.png'
 km_file=$result_dir$cancer_type'_'$network_name'_k_'$K'_km.png'
 
-python $pyNBS_script $mutation_file $network_file -v -mf list -md '\t' -reg -n 100 -k $K -netNMF_n 250 -s_cc $cc_mat_file -s_ca $cluster_assign_file -s_map $map_file -km_plot True -clin $clincal_file -km_title $cancer_type' Survival Plot' -s_km $km_file
+python $pyNBS_script $mutation_file $network_file -v -mf list -md '\t' -n 100 -k $K -netNMF_n 250 -s_cc $cc_mat_file -s_ca $cluster_assign_file -s_map $map_file -km_plot True -clin $clincal_file -km_title $cancer_type' Survival Plot' -s_km $km_file
 

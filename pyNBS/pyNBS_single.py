@@ -25,8 +25,6 @@ def NBS_single(sm_mat, options, propNet=None, propNet_kernel=None, regNet_glap=N
                    'qnorm_data':True,
                    'netNMF_k':4, 
                    'netNMF_gamma':200, 
-                   'netNMF_update_gamma':False, 
-                   'netNMF_gamma_factor':1,
                    'netNMF_niter':250, 
                    'netNMF_eps':1e-15, 
                    'netNMF_err_tol':1e-4, 
@@ -86,8 +84,7 @@ def NBS_single(sm_mat, options, propNet=None, propNet_kernel=None, regNet_glap=N
     regNet_glap_arr = np.array(regNet_glap.ix[propNet_nodes][propNet_nodes])
     # Mixed netNMF Result
     W, H, numIter, finalResid = core.mixed_netNMF(data_arr, regNet_glap_arr, NBS_options['netNMF_k'], W_init=None, H_init=None, 
-                                                  gamma=NBS_options['netNMF_gamma'], update_gamma=NBS_options['netNMF_update_gamma'], 
-                                                  gamma_factor=NBS_options['netNMF_gamma_factor'], niter=NBS_options['netNMF_niter'], 
+                                                  gamma=NBS_options['netNMF_gamma'], niter=NBS_options['netNMF_niter'], 
                                                   eps=NBS_options['netNMF_eps'], err_tol=NBS_options['netNMF_err_tol'], 
                                                   err_delta_tol=NBS_options['netNMF_err_delta_tol'], verbose=verbose, debug_mode=False)
     
