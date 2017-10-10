@@ -7,7 +7,6 @@ import time
 import numpy as np
 import scipy
 import pandas as pd
-#from numba import jit
 
 # Normalize network (or network subgraph) for random walk propagation
 # If symmetric norm is used then the adjacency matrix is normalized as D^-0.5 * A * D^-0.5
@@ -29,7 +28,6 @@ def normalize_network(network, symmetric_norm=False):
 
 # Closed form random-walk propagation (as seen in HotNet2) for each subgraph: Ft = (1-alpha)*Fo * (I-alpha*norm_adj_mat)^-1
 # Concatenate to previous set of subgraphs
-#@jit(nopython=True)
 def fast_random_walk(alpha, binary_mat, subgraph_norm, prop_data):
 	term1=(1-alpha)*binary_mat
 	term2=np.identity(binary_mat.shape[1])-alpha*subgraph_norm
