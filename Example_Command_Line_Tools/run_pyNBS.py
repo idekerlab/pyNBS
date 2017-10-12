@@ -120,7 +120,7 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--netNMF_eps', type=float, default=1e-15, required=False,
         help='Epsilon error value to adjust 0 values during multiplicative matrix updates in netNMF')
     parser.add_argument('-netNMF_n', '--netNMF_niter', type=positive_int, default=250, required=False,
-        help='Maximum umber of multiplicative updates to perform within network-regularized NMF if result does not converge.')    
+        help='Maximum number of multiplicative updates to perform within network-regularized NMF if result does not converge.')    
     parser.add_argument('-tol', '--netNMF_err_tol', type=float, default=1e-4, required=False,
         help='Minimum error tolerance for matrix reconstruction of original data for convergence.')
     parser.add_argument('-tol_d', '--netNMF_err_delta_tol', type=float, default=1e-4, required=False,

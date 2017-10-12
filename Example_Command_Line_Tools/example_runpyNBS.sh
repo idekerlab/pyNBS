@@ -4,18 +4,19 @@
 # To use this bash script, please modify all file path below to indicate your local directory
 # For more information on pyNBS options, please refer to run_pyNBS.py for detailed documentation
 
-cancer_type='BLCA'
+cancer_type='HNSC'
 echo $cancer_type
+K=4
 pyNBS_script='~/pyNBS/Example_Command_Line_Tools/run_pyNBS.py'
 network_file='~/pyNBS/data/Network_Files/CancerSubnetwork.txt'
-mutation_file='~/Data/Cancer_Mutations/'$cancer_type'_sm_data.txt'
+mutation_file='~/pyNBS/data/MutationFiles/'$cancer_type'_sm_data.txt'
 
 network_file_basename=${network_file##*/}
 network_name=${network_file_basename%.*}
 
 
-clincal_file='~/pyNBS/data/Clinical_Files/'$cancer_type'.clin.merged.surv.txt'
-result_dir='~/pyNBS/Example_Command_Line_Tools/results/'$cancer_type'/'
+clincal_file='/cellar/users/t1jia/pyNBS/data/Clinical_Files/'$cancer_type'.clin.merged.surv.txt'
+result_dir='/cellar/users/t1jia/pyNBS/Example_Command_Line_Tools/results/test/'
 mkdir -p $result_dir
 
 cc_mat_file=$result_dir$cancer_type'_'$network_name'_k_'$K'_cc_mat.csv'
