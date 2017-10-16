@@ -27,7 +27,6 @@ setup(
         'argparse>=1.1',
         'lifelines>=0.9.1',
         'networkx>=1.11',
-        'numba>=0.32.0',
         'numpy>=1.11.0',
         'matplotlib>=1.5.1',
         'pandas>=0.19.0',

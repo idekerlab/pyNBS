@@ -9,7 +9,6 @@ pyNBS requires:
   - Argparse>=1.1,
   - [Lifelines](https://lifelines.readthedocs.io/en/latest/)>=0.9.1,
   - Networkx>=1.11,
-  - Numba>=0.32.0,
   - Numpy>=1.11.0,
   - Matplotlib>=1.5.1,
   - Pandas>=0.19.0,
