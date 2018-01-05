@@ -11,7 +11,8 @@
 #  - Patient co-clustering map (optional)
 
 from pyNBS import data_import_tools as dit
-from pyNBS import network_propagation as prop
+from pyNBS import network_propagation2 as prop
+#from pyNBS import network_propagation as prop
 from pyNBS import pyNBS_core as core
 from pyNBS import pyNBS_single
 from pyNBS import consensus_clustering as cc
