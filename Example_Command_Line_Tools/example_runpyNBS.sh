@@ -9,7 +9,7 @@ echo $cancer_type
 K=4
 pyNBS_script='~/pyNBS/Example_Command_Line_Tools/run_pyNBS.py'
 network_file='~/pyNBS/data/Network_Files/CancerSubnetwork.txt'
-mutation_file='~/pyNBS/data/MutationFiles/'$cancer_type'_sm_data.txt'
+mutation_file='~/pyNBS/data/Mutation_Files/'$cancer_type'_sm_data.txt'
 
 network_file_basename=${network_file##*/}
 network_name=${network_file_basename%.*}
