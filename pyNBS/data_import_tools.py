@@ -22,6 +22,90 @@ def load_network_file(network_file_path, delimiter='\t', degree_shuffle=False, l
         network = label_shuffNet(network, verbose=verbose)
     return network
 
+# Load binary mutation data with 2 file types (filetype= 'matrix' or 'list')
+# filetype=='matrix' is a csv or tsv style matrix with row and column headers, rows are samples/patients, columns are genes
+# filetype=='list' is a 2 columns text file separated by the delimiter where 1st column is sample/patient, 2nd column is one gene mutated in that patient
+# Line example in 'list' file: 'Patient ID','Gene Mutated'
+def load_binary_mutation_data(filename, filetype='matrix', delimiter=',', verbose=False):
+	if filetype=='list':
+		f = open(filename)
+		binary_mat_lines = f.read().splitlines()
+		binary_mat_data = [(line.split('\t')[0], line.split('\t')[1]) for line in binary_mat_lines]
+		binary_mat_index = pd.MultiIndex.from_tuples(binary_mat_data, names=['Tumor_Sample_Barcode', 'Hugo_Symbol'])
+		binary_mat_2col = pd.DataFrame(1, index=binary_mat_index, columns=[0])[0]
+		binary_mat = binary_mat_2col.unstack().fillna(0)
+	else:
+		binary_mat = pd.read_csv(filename, delimiter=delimiter, index_col=0).astype(int)
+	if verbose:
+		print 'Binary Mutation Matrix Loaded:', filename
+	return binary_mat
+
+# Load binary mutation data with 2 file types (filetype= 'matrix' or 'list')
+# filetype=='matrix' is a csv or tsv style matrix with row and column headers, rows are samples/patients, columns are genes
+# filetype=='list' is a 2 columns text file separated by the delimiter where 1st column is sample/patient, 2nd column is one gene mutated in that patient
+# Line example in 'list' file: 'Patient ID','Gene Mutated'
+def load_params(params_file=None):
+    run_pyNBS_params = {
+        # Overall pyNBS Parameters
+        'verbose' : True,
+        'outdir' : './Results/',
+        # Data Loading Parameters
+        'sm_data_file' : None,
+        'mut_filetype' : 'matrix',
+        'mut_filedelim' : ',',
+        'network_file' : None,
+        'net_filedelim' : '\t',
+        'degree_preserved_shuffle' : False,
+        'node_label_shuffle' : False,
+        # Data Subsampling Parameters
+        'pats_subsample_p' : 0.8,
+        'gene_subsample_p' : 0.8,
+        'min_muts' : 10,
+        # Network Propagation Parameters
+        'prop_data' : True,
+        'prop_alpha' : 0.7,
+        'prop_symmetric_norm' : False,
+        'qnorm_data' : True,
+        # KNN Network Construction Parameters
+        'reg_net_gamma' : 0.01,
+        'k_nearest_neighbors' : 11,
+        'save_knn_glap' : True,
+        # Network Regularized NMF Parameters
+        'netNMF_k' : 4,
+        'netNMF_gamma' : 200,
+        'netNMF_iter' : 250,
+        'netNMF_eps' : 1e-15,
+        'netNMF_err_tol' : 1e-4,
+        'netNMF_err_delta_tol' : 1e-8,
+        # Consensus Clustering Parameters
+        'niter' : 100,  
+        'save_H' : None,
+        'consensus_cluster' : True,
+        'save_co_cluster_matrix' : True,
+        'plot_co_cluster_map' : True,
+        'save_co_cluster_map' : True,
+        'assign_clusters' : True,
+        'save_cluster_assignments' : True,
+        # Cluster Survival Analysis Parameters
+        'plot_survival' : False,
+        'survival_data' : None,
+        'save_KM_plot' : False
+    }
+    if params_file is not None:
+        params_file = pd.read_csv('./OV_run_pyNBS_Hofree_params.csv', header=-1, comment='#', index_col=0)
+        params_file.columns = ['value']
+        for param in params_file.index:
+            if param in run_pyNBS_params:
+                run_pyNBS_params[param] = params_file.loc[param].astype(type(run_pyNBS_params[param]))['value']
+            else:
+                run_pyNBS_params[param] = params_file['value'].loc[param]
+    else:
+        pass
+    
+    if not os.path.exists(run_pyNBS_params['outdir']):
+        os.makedirs(run_pyNBS_params['outdir'])
+    return run_pyNBS_params
+
 # Shuffle network by preserving node-degree
 def degree_shuffNet(network, verbose=False):
 	shuff_time = time.time()
@@ -123,20 +207,3 @@ def process_TCGA_MAF(maf_file, save_path, filetype='matrix', gene_naming='Symbol
 		print 'MAF file processed:', maf_file, round(time.time()-loadtime, 2), 'seconds.'
 	return
 
-# Load binary mutation data with 2 file types (filetype= 'matrix' or 'list')
-# filetype=='matrix' is a csv or tsv style matrix with row and column headers, rows are samples/patients, columns are genes
-# filetype=='list' is a 2 columns text file separated by the delimiter where 1st column is sample/patient, 2nd column is one gene mutated in that patient
-# Line example in 'list' file: 'Patient ID','Gene Mutated'
-def load_binary_mutation_data(filename, filetype='matrix', delimiter=',', verbose=False):
-	if filetype=='list':
-		f = open(filename)
-		binary_mat_lines = f.read().splitlines()
-		binary_mat_data = [(line.split('\t')[0], line.split('\t')[1]) for line in binary_mat_lines]
-		binary_mat_index = pd.MultiIndex.from_tuples(binary_mat_data, names=['Tumor_Sample_Barcode', 'Hugo_Symbol'])
-		binary_mat_2col = pd.DataFrame(1, index=binary_mat_index, columns=[0])[0]
-		binary_mat = binary_mat_2col.unstack().fillna(0)
-	else:
-		binary_mat = pd.read_csv(filename, delimiter=delimiter, index_col=0).astype(int)
-	if verbose:
-	   print 'Binary Mutation Matrix Loaded:', filename
-	return binary_mat

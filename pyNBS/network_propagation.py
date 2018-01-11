@@ -5,26 +5,22 @@
 import networkx as nx
 import time
 import numpy as np
-import scipy
 import pandas as pd
 
 # Normalize network (or network subgraph) for random walk propagation
 # If symmetric norm is used then the adjacency matrix is normalized as D^-0.5 * A * D^-0.5
 # Otherwise the network is normalized as A*D-1
-# Where D is the diagonalized degree sum of the adjacency matrix A
+# Where D is the diagonalized degree (default is colsum) of the adjacency matrix A
 def normalize_network(network, symmetric_norm=False):
-	adj_mat = nx.adjacency_matrix(network)
-	adj_array = np.array(adj_mat.todense())
-	if symmetric_norm:
-		D = np.diag(1/np.sqrt(sum(adj_array)))
-		adj_array_norm = np.dot(np.dot(D, adj_array), D)
-	else:
-		degree_norm_array = np.diag(1/sum(adj_array).astype(float))
-		sparse_degree_norm_array = scipy.sparse.csr_matrix(degree_norm_array)
-		adj_array_norm = sparse_degree_norm_array.dot(adj_mat).toarray()
-	return adj_array_norm
-# Note about normalizing by degree, if multiply by degree_norm_array first (D^-1 * A), then do not need to return
-# transposed adjacency array, it is already in the correct orientation
+    adj_mat = nx.adjacency_matrix(network)
+    adj_array = np.array(adj_mat.todense())
+    if symmetric_norm:
+        D = np.diag(1/np.sqrt(sum(adj_array)))
+        adj_array_norm = np.dot(np.dot(D, adj_array), D)
+    else:
+        degree = sum(adj_array)
+        adj_array_norm = (adj_array*1.0/degree).T
+    return adj_array_norm
 
 # Closed form random-walk propagation (as seen in HotNet2) for each subgraph: Ft = (1-alpha)*Fo * (I-alpha*norm_adj_mat)^-1
 # Concatenate to previous set of subgraphs
