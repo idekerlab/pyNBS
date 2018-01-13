@@ -25,10 +25,19 @@ def cluster_color_assign(cluster_assignments, name=None):
 # Actual cluster assignments on col_color_map
 # Cluster assignments to be compared passed to row_color_map
 # If there are multiple mappings for row_color_map, it can be passed as a dataframe with the index space of the cc_table
-def plot_cc_map(cc_table, linkage, title=None, row_color_map=None, col_color_map=None, save_path=None):
+def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, params=None):
+    title = ''
+    save_cc_map_plot = True
+    if (params is not None) and (type(params)==dict):
+        if 'save_cc_map' in params:
+            save_cc_map = bool(params['save_cc_map'])
+        if 'job_name' in params:
+            title = params['job_name']+' Co-Clustering Map'
+        if 'verbose' in params:
+            verbose = bool(params['verbose'])
     plt.figure(figsize=(20,20))
     cg = sns.clustermap(cc_table, row_linkage=linkage, col_linkage=linkage, 
-                        cmap='Blues', cbar_kws={'label': 'Co-Clustering'},
+                        cmap='Blues', cbar_kws={'label': 'Co-Cluster Frequency'},
                         row_colors=row_color_map, col_colors=col_color_map, 
                         **{'xticklabels':'False', 'yticklabels':'False'})
     cg.cax.set_position([0.92, .11, .03, .584])
@@ -38,30 +47,40 @@ def plot_cc_map(cc_table, linkage, title=None, row_color_map=None, col_color_map
     cg.ax_heatmap.set_yticks([])
     cg.ax_row_dendrogram.set_visible(False)
     plt.suptitle(title, fontsize=20, x=0.6, y=0.95)
-    if save_path is not None:
-        plt.savefig(save_path, bbox_inches='tight')
-    else:
-        return
+    if save_cc_map:
+        save_cc_map_path = params['outdir']+params['job_name']+'_cc_map.png'
+        plt.savefig(save_cc_map_path, bbox_inches='tight')
+    if verbose:
+        print 'Co-Clustering Map plotted'
+    return
 
 # Function for plotting Kaplan Meier plot of cluster survivals
 # Requires lifelines package
 # clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
 # cluster_assign ias a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
-def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=1825, save_path=None):
+def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
+    title = ''
+    lr_test = True
+    tmax = None
+    save_KMplot = False
+    verbose = False
+    if (params is not None) and (type(params)==dict):
+        if 'job_name' in params:
+            title = params['job_name']+' KM Survival Plot'
+        if 'surv_lr_test' in params:
+            surv_lr_test = bool(params['surv_lr_test'])   
+        if 'surv_tmax' in params:
+            surv_tmax = int(params['surv_tmax'])   
+        if 'save_KMplot' in params:
+            save_KMplot = bool(params['save_KMplot'])   
+        if 'verbose' in params:
+            verbose = bool(params['verbose'])
+
     # Initialize KM plotter
     kmf = KaplanMeierFitter()
-    # Load and format clinical data
-
-    # The block below not needed for THESE processed clinical data files (differ from Github)
-    #clin_data = pd.read_csv(clin_data_fn, sep='\t', index_col=0)
-    #clin_data = clin_data.T
-    #clin_data.index = [index.upper() for index in clin_data.index]
-    #surv = clin_data[['vital_status', 'days_to_death', 'days_to_last_followup']].fillna(0)
-    #surv['overall_survival'] = surv[['days_to_death', 'days_to_last_followup']].max(axis=1).map(lambda x: int(x))
-    
+    # Load and format clinical data   
     surv = pd.read_csv(clin_data_fn, sep=',', index_col=0)
-
     # Number of clusters
     clusters = sorted(list(cluster_assign.value_counts().index))
     k = len(clusters)
@@ -87,68 +106,13 @@ def cluster_KMplot(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=
         p = multiv_lr_test(np.array(cluster_survivals.overall_survival), 
                            np.array(cluster_survivals[cluster_assign.name]), 
                            event_observed=np.array(cluster_survivals.vital_status)).p_value
-        print 'Multi-Class Log-Rank P:', p
-        plt.title(title+'\np='+repr(round(p, 6)), fontsize=24, y=1.02)
+        if verbose:
+            print 'Multi-Class Log-Rank P:', p
+        plt.title(title+'\np='+repr(round(p, 3)), fontsize=24, y=1.02)
     else:
         plt.title(title, fontsize=24, y=1.02)
     # Save KM plot
-    if save_path is not None:
-        plt.savefig(save_path, bbox_inches='tight')
-    if lr_test:
-        return p
-    return
-
-
-# Function for plotting Kaplan Meier plot of cluster survivals
-# Requires lifelines package
-# Format of clin_data_fn is specific to the file used on Hofree et al analysis
-# clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
-# cluster_assign is a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
-# tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
-def cluster_KMplot_Hofree(cluster_assign, clin_data_fn, title=None, lr_test=True, tmax=1825, save_path=None):
-    # Initialize KM plotter
-    kmf = KaplanMeierFitter()
-    # Load and format clinical data
-
-    clin_data = pd.read_csv(clin_data_fn, sep='\t', index_col=0)
-    clin_data = clin_data.T
-    clin_data.index = [index.upper() for index in clin_data.index]
-    surv = clin_data[['vital_status', 'days_to_death', 'days_to_last_followup']].fillna(0)
-    surv['overall_survival'] = surv[['days_to_death', 'days_to_last_followup']].max(axis=1).map(lambda x: int(x))
-    
-
-    # Number of clusters
-    clusters = sorted(list(cluster_assign.value_counts().index))
-    k = len(clusters)
-    # Initialize KM Plot Settings
-    fig = plt.figure(figsize=(10, 7)) 
-    ax = plt.subplot(1,1,1)
-    colors = sns.color_palette('hls', k)
-    cluster_cmap = {clusters[i]:colors[i] for i in range(k)}
-    # Plot each cluster onto KM Plot
-    for clust in clusters:
-        clust_pats = cluster_assign[cluster_assign==clust].index.values
-        clust_surv_data = surv.ix[clust_pats].dropna()
-        kmf.fit(clust_surv_data.overall_survival, clust_surv_data.vital_status, label='Group '+str(clust)+' (n=' +  str(len(clust_surv_data)) + ')')
-        kmf.plot(ax=ax, color=cluster_cmap[clust], ci_show=False)
-    # Set KM plot limits and labels
-    if tmax is not None:
-        plt.xlim((0,tmax))
-    plt.xlabel('Time (Days)', fontsize=16)
-    plt.ylabel('Survival Probability', fontsize=16)
-    # Multivariate logrank test
-    if lr_test:
-        cluster_survivals = pd.concat([surv, cluster_assign], axis=1).dropna().astype(int)
-        p = multiv_lr_test(np.array(cluster_survivals.overall_survival), 
-                           np.array(cluster_survivals[cluster_assign.name]), 
-                           event_observed=np.array(cluster_survivals.vital_status)).p_value
-        print 'Multi-Class Log-Rank P:', p
-        plt.title(title+'\np='+repr(round(p, 6)), fontsize=24, y=1.02)
-    else:
-        plt.title(title, fontsize=24, y=1.02)
-    # Save KM plot
-    if save_path is not None:
-        plt.savefig(save_path, bbox_inches='tight')
-    if lr_test:
-        return p
+    if save_KMplot:
+        save_KMplot_path = params['outdir']+params['job_name']+'_KM_plot.png'
+        plt.savefig(save_KMplot_path, bbox_inches='tight')
     return

@@ -31,7 +31,30 @@ def Hlist_constructor_from_folder(folder, ext='.csv', normalize_H=False, verbose
 # Using hierarchical clustering and average linkage
 # Returns similarity table (distance is 1-similarity) and linkage map of patients
 # Also returns cluster assignment map of patients if wanted
-def consensus_hclust_hard(Hlist, k, assign_cluster=False, verbose=False):
+def consensus_hclust_hard(Hlist, params=None):
+    # Load and set consensus clustering parameters
+    # Make sure all H matrices are pandas DataFrames
+    if not all([type(H)==pd.DataFrame for H in Hlist]):
+        raise ValueError('Not all H matrices given are pandas DataFrames.')
+    k = Hlist[0].shape[1]
+    hclust_linkage_method = 'average'
+    hclust_linkage_metric = 'euclidian'
+    save_cc_matrix = True
+    save_clusters = True
+    verbose = False
+    if (params is not None) and (type(params)==dict):
+        if 'netNMF_k' in params:
+            k = int(params['netNMF_k'])         
+        if 'hclust_linkage_method' in params:
+            hclust_linkage_method = str(params['hclust_linkage_method'])   
+        if 'hclust_linkage_metric' in params:
+            hclust_linkage_metric = str(params['hclust_linkage_metric'])   
+        if 'save_cc_matrix' in params:
+            save_cc_matrix = bool(params['save_cc_matrix'])   
+        if 'save_clusters' in params:
+            save_clusters = bool(params['save_clusters'])   
+        if 'verbose' in params:
+            verbose = bool(params['verbose']) 
     # Generate patient list
     pat_list = set()
     for H in Hlist:
@@ -59,14 +82,15 @@ def consensus_hclust_hard(Hlist, k, assign_cluster=False, verbose=False):
             co_clust_table.ix[cluster_pats, cluster_pats]+=1
     cc_hard_sim_table = co_clust_table.astype(float).divide(cluster_count.astype(float)).fillna(0)
     cc_hard_dist_table = 1-cc_hard_sim_table
-    Z = hclust.linkage(dist.squareform(np.array(cc_hard_dist_table)), method='average')
-    if assign_cluster:
-        cluster_map = hclust.fcluster(Z, k, criterion='maxclust')
-        cluster_assign = pd.Series({cc_hard_dist_table.index[i]:cluster_map[i] for i in range(len(cc_hard_dist_table.index))}, name='CC Hard, k='+repr(k))
-        if verbose:
-            print 'Hlist consensus constructed and sample clusters assigned'
-        return cc_hard_sim_table, Z, cluster_assign
-    else:
-        if verbose:
-            print 'Hlist consensus constructed and sample clusters assigned'
-        return cc_hard_sim_table, Z
+    Z = hclust.linkage(dist.squareform(np.array(cc_hard_dist_table)), method=hclust_linkage_method, metric=hclust_linkage_metric)
+    cluster_map = hclust.fcluster(Z, k, criterion='maxclust')
+    cluster_assign = pd.Series({cc_hard_dist_table.index[i]:cluster_map[i] for i in range(len(cc_hard_dist_table.index))}, name='CC Hard, k='+repr(k))
+    if save_cc_matrix:
+        save_cc_matrix_path = params['outdir']+params['job_name']+'_cc_matrix.csv'
+        cc_hard_sim_table.to_csv(save_cc_matrix_path)
+    if save_clusters:
+        save_clusters_path = params['outdir']+params['job_name']+'_cluster_assignments.csv'
+        cluster_assign.to_csv(save_clusters_path)        
+    if verbose:
+        print 'Hlist consensus constructed and sample clusters assigned'
+    return cc_hard_sim_table, Z, cluster_assign
