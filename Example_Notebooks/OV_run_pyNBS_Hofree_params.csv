@@ -11,6 +11,8 @@ outdir,./Results/OV_Hofree/
 #   Data Loading Parameters   #
 ###############################
 sm_data_file,./Example_Notebook_Data/Mutation_Files/OV_sm_mat_Hofree.csv
+mut_filetype,matrix
+mut_filedelim,","
 network_file,./Example_Notebook_Data/Network_Files/HM90.sif
 
 ###########################################################

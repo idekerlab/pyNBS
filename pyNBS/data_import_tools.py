@@ -45,8 +45,8 @@ def load_network_file(network_file_path, params=None):
 def load_binary_mutation_data(filename, params=None):
 	# Load or set mutation data loading parameters
 	if params is None:
-		filetype = 'matrix'
-		delimiter = ','
+		filetype = 'list'
+		delimiter = '\t'
 		verbose = False
 	else:
 		filetype = params['mut_filetype']
@@ -78,8 +78,8 @@ def load_params(params_file=None):
 		'outdir' : './Results/',
 		# Data Loading Parameters
 		'sm_data_file' : None,
-		'mut_filetype' : 'matrix',
-		'mut_filedelim' : ',',
+		'mut_filetype' : 'list',
+		'mut_filedelim' : '\t',
 		'network_file' : None,
 		'net_filedelim' : '\t',
 		'degree_preserved_shuffle' : False,
@@ -118,7 +118,7 @@ def load_params(params_file=None):
 		# Cluster Survival Analysis Parameters
 		'plot_survival' : False,
 		'surv_data' : '',
-		'surv_file_delim','\t',
+		'surv_file_delim' : '\t',
 		'surv_lr_test' : True,
 		'surv_tmax' : 0,
 		'save_KM_plot' : False
