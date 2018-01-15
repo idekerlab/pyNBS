@@ -118,8 +118,9 @@ def load_params(params_file=None):
 		# Cluster Survival Analysis Parameters
 		'plot_survival' : False,
 		'surv_data' : '',
+		'surv_file_delim','\t'
 		'surv_lr_test' : True,
-		'surv_tmax' : 1825,
+		'surv_tmax' : 0,
 		'save_KM_plot' : False
 	}
 	# Load parameters from file and change any given values

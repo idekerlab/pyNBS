@@ -61,13 +61,16 @@ def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, param
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
 def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
     title = ''
+    delimiter = '\t'
     lr_test = True
-    tmax = None
+    tmax = 0
     save_KMplot = False
     verbose = False
     if (params is not None) and (type(params)==dict):
         if 'job_name' in params:
             title = params['job_name']+' KM Survival Plot'
+        if 'surv_file_delim' in params:
+            delimiter = str(params['surv_file_delim'])
         if 'surv_lr_test' in params:
             surv_lr_test = bool(params['surv_lr_test'])   
         if 'surv_tmax' in params:
@@ -80,7 +83,7 @@ def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
     # Initialize KM plotter
     kmf = KaplanMeierFitter()
     # Load and format clinical data   
-    surv = pd.read_csv(clin_data_fn, sep=',', index_col=0)
+    surv = pd.read_csv(clin_data_fn, sep=delimiter, index_col=0)
     # Number of clusters
     clusters = sorted(list(cluster_assign.value_counts().index))
     k = len(clusters)
@@ -96,7 +99,7 @@ def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
         kmf.fit(clust_surv_data.overall_survival, clust_surv_data.vital_status, label='Group '+str(clust)+' (n=' +  str(len(clust_surv_data)) + ')')
         kmf.plot(ax=ax, color=cluster_cmap[clust], ci_show=False)
     # Set KM plot limits and labels
-    if tmax is not None:
+    if tmax!=0:
         plt.xlim((0,tmax))
     plt.xlabel('Time (Days)', fontsize=16)
     plt.ylabel('Survival Probability', fontsize=16)
