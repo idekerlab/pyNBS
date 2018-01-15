@@ -77,10 +77,8 @@ def load_params(params_file=None):
 		'job_name' : 'pyNBS',
 		'outdir' : './Results/',
 		# Data Loading Parameters
-		'sm_data_file' : None,
 		'mut_filetype' : 'list',
 		'mut_filedelim' : '\t',
-		'network_file' : None,
 		'net_filedelim' : '\t',
 		'degree_preserved_shuffle' : False,
 		'node_label_shuffle' : False,
@@ -117,7 +115,6 @@ def load_params(params_file=None):
 		'save_cc_map' : True,
 		# Cluster Survival Analysis Parameters
 		'plot_survival' : False,
-		'surv_data' : '',
 		'surv_file_delim' : '\t',
 		'surv_lr_test' : True,
 		'surv_tmax' : 0,

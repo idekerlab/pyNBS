@@ -10,10 +10,8 @@ outdir,./Results/OV_Hofree/
 ###############################
 #   Data Loading Parameters   #
 ###############################
-sm_data_file,./Example_Notebook_Data/Mutation_Files/OV_sm_mat_Hofree.csv
 mut_filetype,matrix
 mut_filedelim,","
-network_file,./Example_Notebook_Data/Network_Files/HM90.sif
 
 ###########################################################
 #   K-Nearest Neighbors Network Construction Parameters   #
@@ -42,6 +40,5 @@ niter,100
 #   Cluster Survival Analysis Parameters   #
 ############################################
 plot_survival,True
-survival_data,./Example_Notebook_Data/Clinical_Files/OV.clin.merged.Hofree.txt
 surv_file_delim,","
 save_KM_plot,True
