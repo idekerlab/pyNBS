@@ -8,53 +8,18 @@ import numpy as np
 import scipy.spatial.distance as dist
 import scipy.cluster.hierarchy as hclust
 
-# Constructs Hlist object for consensus clustering functions if NBS iterations were run in parallel and outputs saved to a folder
-def Hlist_constructor_from_folder(folder, ext='.csv', normalize_H=False, verbose=False):
-    co_clustering_results = [folder+fn for fn in os.listdir(folder) if fn.endswith(ext)]
-    # Generate list of patient clusterings from netNMF
-    Hlist = [pd.read_csv(fn, index_col=0) for fn in co_clustering_results]
-    # Normalize H matrices if needed (to make columns comparable if not already done in decomposition)
-    if normalize_H:
-        Hlist_norm = []
-        for H in Hlist:
-            H_norm = np.dot(H,np.diag(1/H.sum()))
-            Hlist_norm.append(pd.DataFrame(H_norm, index=H.index))
-        if verbose:
-            print 'Hlist constructed and normalized'
-        return Hlist_norm
-    else:
-        if verbose:
-            print 'Hlist constructed'
-        return Hlist
-
 # Takes a list of 'H' (patient-by-k) dataframes and performs 'hard' consensus clustering
 # Using hierarchical clustering and average linkage
 # Returns similarity table (distance is 1-similarity) and linkage map of patients
 # Also returns cluster assignment map of patients if wanted
-def consensus_hclust_hard(Hlist, params=None):
-    # Load and set consensus clustering parameters
+def consensus_hclust_hard(Hlist, k=3, hclust_linkage_method='average',
+    hclust_linkage_metric='euclidian', verbose=True, **save_args):
     # Make sure all H matrices are pandas DataFrames
     if not all([type(H)==pd.DataFrame for H in Hlist]):
         raise ValueError('Not all H matrices given are pandas DataFrames.')
-    k = Hlist[0].shape[1]
-    hclust_linkage_method = 'average'
-    hclust_linkage_metric = 'euclidian'
-    save_cc_matrix = True
-    save_clusters = True
-    verbose = False
-    if (params is not None) and (type(params)==dict):
-        if 'netNMF_k' in params:
-            k = int(params['netNMF_k'])         
-        if 'hclust_linkage_method' in params:
-            hclust_linkage_method = str(params['hclust_linkage_method'])   
-        if 'hclust_linkage_metric' in params:
-            hclust_linkage_metric = str(params['hclust_linkage_metric'])   
-        if 'save_cc_matrix' in params:
-            save_cc_matrix = bool(params['save_cc_matrix'])   
-        if 'save_clusters' in params:
-            save_clusters = bool(params['save_clusters'])   
-        if 'verbose' in params:
-            verbose = bool(params['verbose']) 
+    # Default make sure that the number of clusters is <= the number of columns in H
+    if not all([Hlist[0].shape[1]==k for H in Hlist]):
+        raise ValueError('All H matrices must have the same number of columns as number of clusters (k)')
     # Generate patient list
     pat_list = set()
     for H in Hlist:
@@ -85,12 +50,35 @@ def consensus_hclust_hard(Hlist, params=None):
     Z = hclust.linkage(dist.squareform(np.array(cc_hard_dist_table)), method=hclust_linkage_method, metric=hclust_linkage_metric)
     cluster_map = hclust.fcluster(Z, k, criterion='maxclust')
     cluster_assign = pd.Series({cc_hard_dist_table.index[i]:cluster_map[i] for i in range(len(cc_hard_dist_table.index))}, name='CC Hard, k='+repr(k))
-    if save_cc_matrix:
-        save_cc_matrix_path = params['outdir']+params['job_name']+'_cc_matrix.csv'
+    # Save consensus clustering results
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            save_cc_matrix_path = save_args['outdir']+str(save_args['job_name'])+'_cc_matrix.csv'
+            save_clusters_path = save_args['outdir']+str(save_args['job_name'])+'_cluster_assignments.csv'
+        else:
+            save_cc_matrix_path = save_args['outdir']+'cc_matrix.csv'
+            save_clusters_path = save_args['outdir']+'cluster_assignments.csv'
         cc_hard_sim_table.to_csv(save_cc_matrix_path)
-    if save_clusters:
-        save_clusters_path = params['outdir']+params['job_name']+'_cluster_assignments.csv'
-        cluster_assign.to_csv(save_clusters_path)        
+        cluster_assign.to_csv(save_clusters_path)
     if verbose:
         print 'Hlist consensus constructed and sample clusters assigned'
     return cc_hard_sim_table, Z, cluster_assign
+
+# Constructs Hlist object for consensus clustering functions if NBS iterations were run in parallel and outputs saved to a folder
+def Hlist_constructor_from_folder(folder, ext='.csv', normalize_H=False, verbose=False):
+    co_clustering_results = [folder+fn for fn in os.listdir(folder) if fn.endswith(ext)]
+    # Generate list of patient clusterings from netNMF
+    Hlist = [pd.read_csv(fn, index_col=0) for fn in co_clustering_results]
+    # Normalize H matrices if needed (to make columns comparable if not already done in decomposition)
+    if normalize_H:
+        Hlist_norm = []
+        for H in Hlist:
+            H_norm = np.dot(H,np.diag(1/H.sum()))
+            Hlist_norm.append(pd.DataFrame(H_norm, index=H.index))
+        if verbose:
+            print 'Hlist constructed and normalized'
+        return Hlist_norm
+    else:
+        if verbose:
+            print 'Hlist constructed'
+        return Hlist    

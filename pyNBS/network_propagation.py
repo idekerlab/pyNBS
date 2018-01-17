@@ -33,27 +33,11 @@ def fast_random_walk(alpha, binary_mat, subgraph_norm, prop_data):
 
 # Wrapper for random walk propagation of full network by subgraphs
 # Implementation is based on the closed form of the random walk model over networks presented by the HotNet2 paper
-def network_propagation(network, binary_matrix, params=None):
-    # Load or set network propagation parameters
-    alpha = 0.7
-    symmetric_norm = False
-    verbose = False
-    save_kernel = False
-    save_propagation = False
-    iteration = 'kernel'
-    if (params is not None) and (type(params)==dict):
-        if 'prop_alpha' in params:
-            alpha = float(params['prop_alpha'])
-        if 'prop_symmetric_norm' in params:
-            symmetric_norm = bool(params['prop_symmetric_norm'])
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
-        if 'save_kernel' in params:
-            save_kernel = bool(params['save_kernel'])
-        if 'save_prop' in params:
-            save_propagation = bool(params['save_prop'])
-        if 'pyNBS_iteration' in params:
-            iteration = str(params['pyNBS_iteration'])                        
+def network_propagation(network, binary_matrix, alpha=0.7, symmetric_norm=False, verbose=True, **save_args):                        
+    # Parameter error check
+    alpha = float(alpha)
+    if alpha <= 0.0 or alpha >= 1.0:
+    	raise ValueError('Alpha must be a value between 0 and 1')
     # Begin network propagation
     starttime=time.time()
     if verbose:
@@ -77,16 +61,21 @@ def network_propagation(network, binary_matrix, params=None):
         prop_data = fast_random_walk(alpha, binary_matrix_filt, subgraph_norm, prop_data)
     # Return propagated result as dataframe
     prop_data_df = pd.DataFrame(data=prop_data[:,1:], index = binary_matrix.index, columns=prop_data_node_order)
-    if (save_kernel) and (iteration=='kernel'):
-        # Only save this propagation for the kernel if the input is a size-matched identity matrix for the network
-        if (np.array(binary_matrix)==np.identity(len(network.nodes()))).all():
-            save_kernel_path = params['outdir']+params['job_name']+'_prop_kernel.csv'
-            prop_data_df.to_csv(save_kernel_path)
-    if save_propagation:
-        # If saving a different propagation, an 'iteration' variable must be defined to label the save file
-        if iteration!='kernel':
-            save_prop_path = params['outdir']+params['job_name']+'_prop_'+iteration+'.csv'
-            prop_data_df.to_csv(save_prop_path)
+    # Saving the propagation result
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            if 'iteration_label' in save_args:
+                save_path = save_args['outdir']+str(save_args['job_name'])+'_prop_'+str(save_args['iteration_label'])+'.csv'
+            else:
+                save_path = save_args['outdir']+str(save_args['job_name'])+'_prop.csv'
+        else:
+            if 'iteration_label' in save_args:
+                save_path = save_args['outdir']+'prop_'+str(save_args['iteration_label'])+'.csv'
+            else:
+                save_path = save_args['outdir']+'prop.csv'
+        prop_data_df.to_csv(save_path)
+        if verbose:
+        	print 'Network Propagation Result Saved:', save_path
     else:
         pass
     if verbose:
@@ -96,18 +85,7 @@ def network_propagation(network, binary_matrix, params=None):
 # Wrapper for propagating binary mutation matrix over network by subgraph given network propagation kernel
 # The network propagation kernel can be pre-computed using the network_propagation function and a identity matrix data frame of the network
 # Pre-calculating the kernel for many runs of NBS saves a significant amount of time
-def network_kernel_propagation(network, network_kernel, binary_matrix, params=None):
-    # Load or set network propagation parameters
-    verbose = False
-    save_propagation = False
-    iteration = '1'
-    if (params is not None) and (type(params)==dict):
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
-        if 'save_prop' in params:
-            save_propagation = bool(params['save_prop'])
-        if 'pyNBS_iteration' in params:
-            iteration = str(params['pyNBS_iteration'])  
+def network_kernel_propagation(network, network_kernel, binary_matrix, verbose=False, **save_args):
     starttime=time.time()
     if verbose:
         print 'Performing network propagation with network kernel'
@@ -116,19 +94,31 @@ def network_kernel_propagation(network, network_kernel, binary_matrix, params=No
     # Initialize propagation results by propagating first subgraph
     prop_nodelist = list(subgraph_nodelists[0])
     prop_data = np.dot(binary_matrix.T.ix[prop_nodelist].fillna(0).T, 
-    				   network_kernel.ix[prop_nodelist][prop_nodelist])
+                       network_kernel.ix[prop_nodelist][prop_nodelist])
     # Get propagated results for remaining subgraphs
     for nodelist in subgraph_nodelists[1:]:
         subgraph_nodes = list(nodelist)
         prop_nodelist = prop_nodelist + subgraph_nodes
         subgraph_prop_data = np.dot(binary_matrix.T.ix[subgraph_nodes].fillna(0).T, 
-        							network_kernel.ix[subgraph_nodes][subgraph_nodes])
+                                    network_kernel.ix[subgraph_nodes][subgraph_nodes])
         prop_data = np.concatenate((prop_data, subgraph_prop_data), axis=1)
     # Return propagated result as dataframe
     prop_data_df = pd.DataFrame(data=prop_data, index = binary_matrix.index, columns=prop_nodelist)
-    if save_propagation:
-        save_prop_path = params['outdir']+params['job_name']+'_prop_'+iteration+'.csv'
-        prop_data_df.to_csv(save_prop_path)
+    # Saving the propagation result
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            if 'iteration_label' in save_args:
+                save_path = save_args['outdir']+str(save_args['job_name'])+'_prop_'+str(save_args['iteration_label'])+'.csv'
+            else:
+                save_path = save_args['outdir']+str(save_args['job_name'])+'_prop.csv'
+        else:
+            if 'iteration_label' in save_args:
+                save_path = save_args['outdir']+'prop_'+str(save_args['iteration_label'])+'.csv'
+            else:
+                save_path = save_args['outdir']+'prop.csv'
+        prop_data_df.to_csv(save_path)
+    else:
+        pass
     if verbose:
         print 'Network Propagation Complete:', time.time()-starttime, 'seconds'                
     return prop_data_df

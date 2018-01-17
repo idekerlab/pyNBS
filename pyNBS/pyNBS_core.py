@@ -16,21 +16,7 @@ import time
 # network is a NetworkX object
 # gamma is the Vandin 2011 diagonal correction value (should be small)
 # kn is the number of nearest neighbors to construct network regularizer from
-def network_inf_KNN_glap(network, params=None):
-    # Load or set knnGlap construction parameters
-    gamma = 0.01
-    kn = 11
-    verbose = False
-    save_knnGlap = False
-    if (params is not None) and (type(params)==dict):
-        if 'reg_net_gamma' in params:
-            gamma = float(params['reg_net_gamma'])
-        if 'k_nearest_neighbors' in params:
-            kn = int(params['k_nearest_neighbors'])
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
-        if 'save_knn_glap' in params:
-            save_knnGlap = bool(params['save_knn_glap'])
+def network_inf_KNN_glap(network, gamma=0.01, kn=11, verbose=True, **save_args):
     glap_inv_starttime = time.time()
     # Construct network laplacian matrix
     network_nodes = network.nodes()
@@ -61,8 +47,12 @@ def network_inf_KNN_glap(network, params=None):
     # Calculate KNN graph laplacian
     knnGlap_sparse = nx.laplacian_matrix(KNN_graph)
     knnGlap = pd.DataFrame(knnGlap_sparse.todense(), index=KNN_nodes, columns=KNN_nodes)
-    if save_knnGlap:
-        save_path = params['outdir']+params['job_name']+'_knnGlap.csv'
+    # Save KNN network graph laplacian to csv if save_path options are given
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            save_path = save_args['outdir']+str(save_args['job_name'])+'_knnGlap.csv'
+        else:
+            save_path = save_args['outdir']+'knnGlap.csv'
         knnGlap.to_csv(save_path)
     if verbose:
         print 'Graph laplacian of KNN network from influence matrix calculated:', time.time()-KNN_starttime, 'seconds'    
@@ -71,18 +61,7 @@ def network_inf_KNN_glap(network, params=None):
 # Function to sub-sample binary somatic mutation profile data frame in context of a given network
 # If no network (propNet) is given, all genes are sub-sampled
 # Key is that filtering for min mutation count happens before filtering by network nodes not after
-def subsample_sm_mat(sm_mat, propNet=None, params=None):
-    # Load or set subsampling parameters
-    pats_subsample_p = 0.8
-    gene_subsample_p = 0.8
-    min_muts = 10
-    if (params is not None) and (type(params)==dict):
-        if 'pats_subsample_p' in params:
-            pats_subsample_p = float(params['pats_subsample_p'])
-        if 'gene_subsample_p' in params:
-            pats_subsample_p = float(params['gene_subsample_p'])
-        if 'min_muts' in params:
-            min_muts = int(params['min_muts'])            
+def subsample_sm_mat(sm_mat, propNet=None, pats_subsample_p=0.8, gene_subsample_p=0.8, min_muts=10):          
     # Filter columns by network nodes only if network is given
     if propNet is not None:
         # Check if network node names intersect with somatic mutation matrix column names
@@ -146,30 +125,8 @@ def nnls_single(solution_vect):
 #   err_delta_tol = Maximum change in reconstruction error allowed for break
 #   maxiter = Maximum number of iterations to execute before break
 # verbose = print statements on update progress
-def mixed_netNMF(data, KNN_glap, params=None):
-    # Load or set netNMF parameters
-    k = 3
-    gamma = 200
-    maxiter = 250
-    eps = 1e-15
-    err_tol = 1e-4
-    err_delta_tol = 1e-4
-    verbose = False
-    if (params is not None) and (type(params)==dict):
-        if 'netNMF_k' in params:
-            k = int(params['netNMF_k'])
-        if 'netNMF_gamma' in params:
-            gamma = float(params['netNMF_gamma'])
-        if 'netNMF_maxiter' in params:
-            maxiter = int(params['netNMF_maxiter'])
-        if 'netNMF_eps' in params:
-            eps = float(params['netNMF_eps'])
-        if 'netNMF_err_tol' in params:
-            err_tol = float(params['netNMF_err_tol'])
-        if 'netNMF_err_delta_tol' in params:
-            err_delta_tol = float(params['netNMF_err_delta_tol']) 
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
+def mixed_netNMF(data, KNN_glap, k=3, gamma=200, maxiter=250, 
+    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H
@@ -246,30 +203,8 @@ def mixed_netNMF(data, KNN_glap, params=None):
 # "Debug mode" version of the mixed netNMF function
 # This version of mixed_netNMF returns additional lists of each intermediate netNMF update step
 # as well as internal statistics of the netNMF updates at each update step
-def mixed_netNMF_debug(data, KNN_glap, W_init=None, H_init=None, params=None):
-    # Load or set netNMF parameters
-    k = 3
-    gamma = 200
-    maxiter = 250
-    eps = 1e-15
-    err_tol = 1e-4
-    err_delta_tol = 1e-4
-    verbose = False
-    if (params is not None) and (type(params)==dict):
-        if 'netNMF_k' in params:
-            k = int(params['netNMF_k'])
-        if 'netNMF_gamma' in params:
-            gamma = float(params['netNMF_gamma'])
-        if 'netNMF_maxiter' in params:
-            maxiter = int(params['netNMF_maxiter'])
-        if 'netNMF_eps' in params:
-            eps = float(params['netNMF_eps'])
-        if 'netNMF_err_tol' in params:
-            err_tol = float(params['netNMF_err_tol'])
-        if 'netNMF_err_delta_tol' in params:
-            err_delta_tol = float(params['netNMF_err_delta_tol']) 
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
+def mixed_netNMF_debug(data, KNN_glap, W_init=None, H_init=None, k=3, gamma=200, maxiter=250, 
+    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H
@@ -304,7 +239,7 @@ def mixed_netNMF_debug(data, KNN_glap, W_init=None, H_init=None, params=None):
     if verbose:
         print 'D and A matrices calculated'
     # Set mixed netNMF reporting variables
-    resVal, resVal_Kreg, fitResVect, timestep, Wlist, Hlist = [], [], [], [], [], []
+    resVal, fitResVect, timestep, Wlist, Hlist = [], [], [], [], []
     XfitPrevious = np.inf
     
     # Updating W and H
@@ -362,4 +297,4 @@ def mixed_netNMF_debug(data, KNN_glap, W_init=None, H_init=None, params=None):
        	# Track each iterations' time step
         timestep.append(time.time()-iter_time)
     
-    return W, H, numIter, finalResidual, resVal, resVal_Kreg, fitResVect, Wlist, Hlist, timestep
+    return W, H, numIter, finalResidual, resVal, fitResVect, Wlist, Hlist, timestep

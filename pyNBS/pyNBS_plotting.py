@@ -25,16 +25,10 @@ def cluster_color_assign(cluster_assignments, name=None):
 # Actual cluster assignments on col_color_map
 # Cluster assignments to be compared passed to row_color_map
 # If there are multiple mappings for row_color_map, it can be passed as a dataframe with the index space of the cc_table
-def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, params=None):
-    title = ''
-    save_cc_map_plot = True
-    if (params is not None) and (type(params)==dict):
-        if 'save_cc_map' in params:
-            save_cc_map = bool(params['save_cc_map'])
-        if 'job_name' in params:
-            title = params['job_name']+' Co-Clustering Map'
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
+def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, verbose=True, **save_args):
+    title = 'Co-Clustering Map'
+    if 'job_name' in save_args:
+        title = save_args['job_name']+' Co-Clustering Map'
     plt.figure(figsize=(20,20))
     cg = sns.clustermap(cc_table, row_linkage=linkage, col_linkage=linkage, 
                         cmap='Blues', cbar_kws={'label': 'Co-Cluster Frequency'},
@@ -47,9 +41,13 @@ def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, param
     cg.ax_heatmap.set_yticks([])
     cg.ax_row_dendrogram.set_visible(False)
     plt.suptitle(title, fontsize=20, x=0.6, y=0.95)
-    if save_cc_map:
-        save_cc_map_path = params['outdir']+params['job_name']+'_cc_map.png'
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            save_cc_map_path = save_args['outdir']+save_args['job_name']+'_cc_map.png'
+        else:
+            save_cc_map_path = save_args['outdir']+'cc_map.png'
         plt.savefig(save_cc_map_path, bbox_inches='tight')
+        plt.show()
     if verbose:
         print 'Co-Clustering Map plotted'
     return
@@ -59,26 +57,10 @@ def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, param
 # clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
 # cluster_assign ias a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
-def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
-    title = ''
-    delimiter = '\t'
-    lr_test = True
-    tmax = 0
-    save_KMplot = False
-    verbose = False
-    if (params is not None) and (type(params)==dict):
-        if 'job_name' in params:
-            title = params['job_name']+' KM Survival Plot'
-        if 'surv_file_delim' in params:
-            delimiter = str(params['surv_file_delim'])
-        if 'surv_lr_test' in params:
-            surv_lr_test = bool(params['surv_lr_test'])   
-        if 'surv_tmax' in params:
-            surv_tmax = int(params['surv_tmax'])   
-        if 'save_KMplot' in params:
-            save_KMplot = bool(params['save_KMplot'])   
-        if 'verbose' in params:
-            verbose = bool(params['verbose'])
+def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, tmax=0, verbose=True, **save_args):
+    title = 'KM Survival Plot'
+    if 'job_name' in save_args:
+        title = save_args['job_name']+' KM Survival Plot'
 
     # Initialize KM plotter
     kmf = KaplanMeierFitter()
@@ -115,7 +97,11 @@ def cluster_KMplot(cluster_assign, clin_data_fn, params=None):
     else:
         plt.title(title, fontsize=24, y=1.02)
     # Save KM plot
-    if save_KMplot:
-        save_KMplot_path = params['outdir']+params['job_name']+'_KM_plot.png'
+    if 'outdir' in save_args:
+        if 'job_name' in save_args:
+            save_KMplot_path = save_args['outdir']+save_args['job_name']+'_KM_plot.png'
+        else:
+            save_KMplot_path = save_args['outdir']+'KM_plot.png'
         plt.savefig(save_KMplot_path, bbox_inches='tight')
+        plt.show()
     return
