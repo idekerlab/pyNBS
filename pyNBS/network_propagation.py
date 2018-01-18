@@ -29,7 +29,8 @@ def fast_random_walk(alpha, binary_mat, subgraph_norm, prop_data):
     term2=np.identity(binary_mat.shape[1])-alpha*subgraph_norm
     term2_inv = np.linalg.inv(term2)
     subgraph_prop = np.dot(term1, term2_inv)
-    return np.concatenate((prop_data, subgraph_prop), axis=1)
+    prop_data_add = np.concatenate((prop_data, subgraph_prop), axis=1)
+    return prop_data_add
 
 # Wrapper for random walk propagation of full network by subgraphs
 # Implementation is based on the closed form of the random walk model over networks presented by the HotNet2 paper

@@ -109,7 +109,8 @@ def qnorm(data):
 
 # Helper function for computing non-negative least squares solution
 def nnls_single(solution_vect):
-    return nnls(factor_matrix, solution_vect)[0]
+    nnls_single_solution = nnls(factor_matrix, solution_vect)[0]
+    return nnls_single_solution
 
 # Adapted from Matan Hofree's Matlab code in NBS
 # data = features-by-samples propagated (or not) mutation profiles

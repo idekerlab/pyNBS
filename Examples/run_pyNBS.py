@@ -116,7 +116,7 @@ if __name__ == "__main__":
     print '##################################################################################'
     print '# Beginning pyNBS Run:', params['job_name']
     print '##################################################################################'
-    print 'Results ouput directory:', params['outdir']
+    print 'Results ouput directory:', save_args['outdir']
     print
     print '##################################################################################'
     print '# Loading binary somatic mutation data'
@@ -144,7 +144,7 @@ if __name__ == "__main__":
         print 'Number of nearest neighbors to connect each network node to for regularization network:', params['k_nearest_neighbors']
         print 'Save regularization network graph laplacian:', params['save_knn_glap']
         if params['save_knn_glap']:
-            print params['outdir']+str(params['job_name'])+'_knnGlap.csv'
+            print save_args['outdir']+str(save_args['job_name'])+'_knnGlap.csv'
     if params['save_knn_glap']:
         knnGlap = core.network_inf_KNN_glap(network, gamma=params['reg_net_gamma'], kn=params['k_nearest_neighbors'], verbose=verbose, **save_args)
     else:
@@ -158,7 +158,7 @@ if __name__ == "__main__":
         print 'Symmetric adjacency matrix normalization for propagation:', params['prop_symmetric_norm']
         print 'Save network propagation kernel:', params['save_kernel']
         if params['save_kernel']:
-            print params['outdir']+str(params['job_name'])+'_prop_kernel.csv'
+            print save_args['outdir']+str(save_args['job_name'])+'_prop_kernel.csv'
     # Calculate propagation kernel by propagating identity matrix of network
     network_nodes = network.nodes()
     network_I = pd.DataFrame(np.identity(len(network_nodes)), index=network_nodes, columns=network_nodes)
@@ -198,6 +198,8 @@ if __name__ == "__main__":
         # Change iteration label for each run of pyNBS
         if (params['save_prop']) or (params['save_H']):
             params['iteration_label']=str(i+1)
+        else:
+            del params['outdir']
         # Run pyNBS core steps and save resulting H matrix to Hlist
         Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
         # Report run time of each pyNBS iteration

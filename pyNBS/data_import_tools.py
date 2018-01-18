@@ -3,6 +3,7 @@
 ###############################################
 
 import pandas as pd
+import numpy as np
 import networkx as nx
 import time
 import os
@@ -104,7 +105,10 @@ def load_params(params_file=None):
 		params_file.columns = ['value']
 		for param in params_file.index:
 			if param in run_pyNBS_params:
-				run_pyNBS_params[param] = params_file.loc[param].astype(type(run_pyNBS_params[param]))['value']
+				if type(run_pyNBS_params[param])==bool:
+					run_pyNBS_params[param] = (params_file.loc[param, 'value']=='True')
+				else:
+					run_pyNBS_params[param] = params_file.loc[param].astype(type(run_pyNBS_params[param]))['value']
 			else:
 				run_pyNBS_params[param] = params_file['value'].loc[param]
 	else:
