@@ -30,7 +30,7 @@ def load_network_file(network_file_path, delimiter='\t', degree_shuffle=False, l
 # filetype=='matrix' is a csv or tsv style matrix with row and column headers, rows are samples/patients, columns are genes
 # filetype=='list' is a 2 columns text file separated by the delimiter where 1st column is sample/patient, 2nd column is one gene mutated in that patient
 # Line example in 'list' file: 'Patient ID','Gene Mutated'
-def load_binary_mutation_data(filename, filetype='list', delimiter='\t', verbose=False):
+def load_binary_mutation_data(filename, filetype='list', delimiter='\t', verbose=True):
 	# Load binary mutation data from file
 	if filetype=='list':
 		f = open(filename)
@@ -71,7 +71,6 @@ def load_params(params_file=None):
 		'prop_symmetric_norm' : False,
 		'save_kernel' : False,
 		'save_prop' : False,
-		'pyNBS_iteration' : 0,
 		'qnorm_data' : True,
 		# KNN Network Construction Parameters
 		'reg_net_gamma' : 0.01,
@@ -89,8 +88,7 @@ def load_params(params_file=None):
 		'niter' : 100,  
 		'hclust_linkage_method' : 'average',
 		'hclust_linkage_metric' : 'euclidean',
-		'save_cc_matrix' : True,
-		'save_clusters' : True,
+		'save_cc_results' : True,
 		'save_cc_map' : True,
 		# Cluster Survival Analysis Parameters
 		'plot_survival' : False,

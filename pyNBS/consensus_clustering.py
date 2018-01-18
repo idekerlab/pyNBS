@@ -26,7 +26,7 @@ def consensus_hclust_hard(Hlist, k=3, hclust_linkage_method='average',
         pat_list = pat_list.union(set(H.index))
     pat_list = sorted(list(pat_list))
     if verbose:
-        print 'Constructing Hlist:', len(Hlist), 'cluster matrices', len(pat_list), 'samples'
+        print 'Constructing Hlist:', len(Hlist), 'cluster matrices, ', len(pat_list), 'samples'
 
     # Initialzie co-clustering tables
     co_clust_table = pd.DataFrame(0, index=pat_list, columns=pat_list)

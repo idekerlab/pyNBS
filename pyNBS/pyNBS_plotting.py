@@ -43,7 +43,7 @@ def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, verbo
     plt.suptitle(title, fontsize=20, x=0.6, y=0.95)
     if 'outdir' in save_args:
         if 'job_name' in save_args:
-            save_cc_map_path = save_args['outdir']+save_args['job_name']+'_cc_map.png'
+            save_cc_map_path = save_args['outdir']+str(save_args['job_name'])+'_cc_map.png'
         else:
             save_cc_map_path = save_args['outdir']+'cc_map.png'
         plt.savefig(save_cc_map_path, bbox_inches='tight')
@@ -76,7 +76,7 @@ def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, t
     cluster_cmap = {clusters[i]:colors[i] for i in range(k)}
     # Plot each cluster onto KM Plot
     for clust in clusters:
-        clust_pats = cluster_assign[cluster_assign==clust].index.values
+        clust_pats = list(cluster_assign[cluster_assign==clust].index)
         clust_surv_data = surv.ix[clust_pats].dropna()
         kmf.fit(clust_surv_data.overall_survival, clust_surv_data.vital_status, label='Group '+str(clust)+' (n=' +  str(len(clust_surv_data)) + ')')
         kmf.plot(ax=ax, color=cluster_cmap[clust], ci_show=False)
@@ -93,15 +93,17 @@ def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, t
                            event_observed=np.array(cluster_survivals.vital_status)).p_value
         if verbose:
             print 'Multi-Class Log-Rank P:', p
-        plt.title(title+'\np='+repr(round(p, 3)), fontsize=24, y=1.02)
+        plt.title(title+'\np='+repr(round(p, 4)), fontsize=24, y=1.02)
     else:
         plt.title(title, fontsize=24, y=1.02)
     # Save KM plot
     if 'outdir' in save_args:
         if 'job_name' in save_args:
-            save_KMplot_path = save_args['outdir']+save_args['job_name']+'_KM_plot.png'
+            save_KMplot_path = save_args['outdir']+str(save_args['job_name'])+'_KM_plot.png'
         else:
             save_KMplot_path = save_args['outdir']+'KM_plot.png'
         plt.savefig(save_KMplot_path, bbox_inches='tight')
         plt.show()
+    if verbose:
+        print 'Kaplan Meier Plot constructed'        
     return

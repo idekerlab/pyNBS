@@ -47,7 +47,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
         raise ValueError('Subsampled somatic mutation matrix contains no patients.')
 
     # Propagate data if network object is provided
-    if prop_data is not None:
+    if propNet is not None:
         # Determine if propagation is can be based on pre-computed propagation kernel
         if propNet_kernel is None:
             # If kernel is not given and some propagation parameters are given in kwargs, set propagation parameters
@@ -111,13 +111,11 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
         netNMF_err_tol = float(kwargs['netNMF_err_tol'])
     if 'netNMF_err_delta_tol' in kwargs:
         netNMF_err_delta_tol = float(kwargs['netNMF_err_delta_tol']) 
-    if 'netNMF_verbose' in kwargs:
-        netNMF_verbose = bool(kwargs['netNMF_verbose'])
 
     # Mixed netNMF Result
     W, H, numIter, finalResid = core.mixed_netNMF(data_arr, regNet_glap_arr, k=k, 
         gamma=netNMF_gamma, maxiter=netNMF_maxiter, eps=netNMF_eps, 
-        err_tol=netNMF_err_tol, err_delta_tol=netNMF_err_delta_tol, verbose=netNMF_verbose)
+        err_tol=netNMF_err_tol, err_delta_tol=netNMF_err_delta_tol, verbose=False)
     
     # Return netNMF result (dimension-reduced propagated patient profiles)
     H_df = pd.DataFrame(H.T, index=prop_data_qnorm.index)
