@@ -15,7 +15,7 @@ echo  'Number of pyNBS iterations: '$niter
 
 # This example script assumes you are in the Command_Line_Tools directory of the pyNBS GitHub repository
 # Please edit the following paths to point to the desired files for your own usage
-pyNBS_script=$PWD'/run_pyNBS_debug.py'
+pyNBS_script=$PWD'/run_pyNBS.py'
 echo 'Python Script: '$pyNBS_script
 network_file=$PWD'/Example_Data/Network_Files/CancerSubnetwork.txt'
 echo 'Network File: '$network_file

@@ -193,13 +193,13 @@ if __name__ == "__main__":
     # Initialize and construct Hlist
     print
     Hlist = []
+    if (params['save_prop']==False) and (params['save_H']==False):
+        del params['outdir']
     for i in range(params['niter']):
         netNMF_time = time.time()
         # Change iteration label for each run of pyNBS
         if (params['save_prop']) or (params['save_H']):
             params['iteration_label']=str(i+1)
-        else:
-            del params['outdir']
         # Run pyNBS core steps and save resulting H matrix to Hlist
         Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
         # Report run time of each pyNBS iteration

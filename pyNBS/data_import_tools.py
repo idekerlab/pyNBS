@@ -169,7 +169,7 @@ def filter_weighted_network(network_file_path, nodeA_col=0, nodeB_col=1, score_c
 	return data_filt
 
 # Convert and save MAF from Broad Firehose
-# Can produce 2 types of filetypes: 'matrix' or 'list', matrix is a full samples-by-genes binary csv, 'list' is a sparse representaiton of 'matrix'
+# Can produce 2 types of filetypes: 'matrix' or 'list', matrix is a full samples-by-genes binary csv, 'list' is a sparse representation of 'matrix'
 # This is a conversion tool, so the result must be saved (most tools will require a path to a processed MAF file and load it separately)
 # Gene naming can be 'Symbol' or 'Entrez'
 def process_TCGA_MAF(maf_file, save_path, filetype='matrix', gene_naming='Symbol', verbose=False):
