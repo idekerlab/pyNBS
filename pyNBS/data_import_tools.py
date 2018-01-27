@@ -40,8 +40,10 @@ def load_binary_mutation_data(filename, filetype='list', delimiter='\t', verbose
 		binary_mat_index = pd.MultiIndex.from_tuples(binary_mat_data, names=['Tumor_Sample_Barcode', 'Gene_Name'])
 		binary_mat_2col = pd.DataFrame(1, index=binary_mat_index, columns=[0])[0]
 		binary_mat = binary_mat_2col.unstack().fillna(0)
-	else:
+	elif filetype=='matrix':
 		binary_mat = pd.read_csv(filename, delimiter=delimiter, index_col=0).astype(int)
+	else:
+		raise ValueError("'filetype' must be either 'matrix' or 'list'.")
 	if verbose:
 		print 'Binary Mutation Matrix Loaded:', filename
 	return binary_mat
@@ -79,7 +81,7 @@ def load_params(params_file=None):
 		'save_knn_glap' : True,	
 		# Network Regularized NMF Parameters
 		'netNMF_k' : 4,
-		'netNMF_gamma' : 200,
+		'netNMF_lambda' : 200,
 		'netNMF_maxiter' : 250,
 		'netNMF_eps' : 1e-15,
 		'netNMF_err_tol' : 1e-4,
@@ -95,7 +97,7 @@ def load_params(params_file=None):
 		'plot_survival' : False,
 		'surv_file_delim' : '\t',
 		'surv_lr_test' : True,
-		'surv_tmax' : 0,
+		'surv_tmax' : -1,
 		'save_KM_plot' : False
 	}
 	# Load parameters from file and change any given values
@@ -151,10 +153,10 @@ def label_shuffNet(network, verbose=False):
 		print 'Network shuffled:', time.time()-shuff_time, 'seconds. Edge similarity:', shared_edges/float(edge_len)
 	return shuff_net		
 
-# Filter extended sif file where all edges are weighted by a specific quantile
+# Filter extended network txt file where all edges are weighted by a specific quantile
 # Return the filtered network edge list and save it to a file if desired (for import by load_network_file)
 # The input weighted network file may be any table format of edge list, but the columns for Node A, Node B, and weight must be specified
-def filter_weighted_network(network_file_path, nodeA_col=0, nodeB_col=1, score_col=2, q=0.9, delimiter='\t', verbose=False, save_path=None):
+def filter_weighted_network(network_file_path, save_path, nodeA_col=0, nodeB_col=1, score_col=2, q=0.9, delimiter='\t', verbose=False):
 	data = pd.read_csv(network_file_path, sep=delimiter, header=-1, low_memory=False)
 	# Filter edges by score quantile
 	q_score = data[score_col].quantile(q)
@@ -164,9 +166,8 @@ def filter_weighted_network(network_file_path, nodeA_col=0, nodeB_col=1, score_c
 	data_filt.columns = ['nodeA', 'nodeB', 'edgeScore']
 	if verbose:
 		print data_filt.shape[0], '/', data.shape[0], 'edges retained'
-	if save_path is not None:
-		data_filt.to_csv(save_path, sep='\t', header=False, index=False)
-	return data_filt
+	data_filt.to_csv(save_path, sep='\t', header=False, index=False)
+	return 
 
 # Convert and save MAF from Broad Firehose
 # Can produce 2 types of filetypes: 'matrix' or 'list', matrix is a full samples-by-genes binary csv, 'list' is a sparse representation of 'matrix'

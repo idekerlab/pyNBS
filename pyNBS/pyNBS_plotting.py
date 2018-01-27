@@ -18,7 +18,8 @@ def cluster_color_assign(cluster_assignments, name=None):
     pat_colors = {}
     for pat in cluster_assignments.index:
         pat_colors[pat] = cluster_cmap[cluster_assignments.ix[pat]]
-    return pd.Series(pat_colors, name=name)
+    cluster_cmap = pd.Series(pat_colors, name=name)
+    return cluster_cmap
 
 # Function for plotting consensus clustering map
 # Needs both the consensus clustering similarity table and linkage map from assignment
@@ -57,7 +58,7 @@ def plot_cc_map(cc_table, linkage, row_color_map=None, col_color_map=None, verbo
 # clin_data_fn is the the clinical data of TCGA cohort from Broad Firehose
 # cluster_assign ias a pandas Series of the patient cluster assignments from NBS with patient ID's as the index
 # tmax is the maximum plot duration for the KMplot, but the logrank test always calculates to longest survival point
-def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, tmax=0, verbose=True, **save_args):
+def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, tmax=-1, verbose=True, **save_args):
     title = 'KM Survival Plot'
     if 'job_name' in save_args:
         title = save_args['job_name']+' KM Survival Plot'
@@ -80,16 +81,16 @@ def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, t
         clust_surv_data = surv.ix[clust_pats].dropna()
         kmf.fit(clust_surv_data.overall_survival, clust_surv_data.vital_status, label='Group '+str(clust)+' (n=' +  str(len(clust_surv_data)) + ')')
         kmf.plot(ax=ax, color=cluster_cmap[clust], ci_show=False)
-    # Set KM plot limits and labels
-    if tmax!=0:
-        plt.xlim((0,tmax))
+    # Set KM plot limits to 5 years and labels
+    # if tmax!=-1:
+    plt.xlim((0,1825))
     plt.xlabel('Time (Days)', fontsize=16)
     plt.ylabel('Survival Probability', fontsize=16)
     # Multivariate logrank test
     if lr_test:
         cluster_survivals = pd.concat([surv, cluster_assign], axis=1).dropna().astype(int)
         p = multiv_lr_test(np.array(cluster_survivals.overall_survival), 
-                           np.array(cluster_survivals[cluster_assign.name]), 
+                           np.array(cluster_survivals[cluster_assign.name]), t_0=tmax,
                            event_observed=np.array(cluster_survivals.vital_status)).p_value
         if verbose:
             print 'Multi-Class Log-Rank P:', p
@@ -105,5 +106,8 @@ def cluster_KMplot(cluster_assign, clin_data_fn, delimiter='\t', lr_test=True, t
         plt.savefig(save_KMplot_path, bbox_inches='tight')
         plt.show()
     if verbose:
-        print 'Kaplan Meier Plot constructed'        
-    return
+        print 'Kaplan Meier Plot constructed'
+    if lr_test:
+        return p
+    else:
+        return

@@ -24,12 +24,12 @@ def normalize_network(network, symmetric_norm=False):
 
 # Closed form random-walk propagation (as seen in HotNet2) for each subgraph: Ft = (1-alpha)*Fo * (I-alpha*norm_adj_mat)^-1
 # Concatenate to previous set of subgraphs
-def fast_random_walk(alpha, binary_mat, subgraph_norm, prop_data):
+def fast_random_walk(alpha, binary_mat, subgraph_norm, prop_data_prev):
     term1=(1-alpha)*binary_mat
     term2=np.identity(binary_mat.shape[1])-alpha*subgraph_norm
     term2_inv = np.linalg.inv(term2)
     subgraph_prop = np.dot(term1, term2_inv)
-    prop_data_add = np.concatenate((prop_data, subgraph_prop), axis=1)
+    prop_data_add = np.concatenate((prop_data_prev, subgraph_prop), axis=1)
     return prop_data_add
 
 # Wrapper for random walk propagation of full network by subgraphs

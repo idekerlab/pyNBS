@@ -16,7 +16,7 @@ import random
 # propNet = NetworkX graph object to propagate binary mutations over
 # kwargs = dictionary of parameters to set for various parts of netNMF setup and execuction
 def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None, 
-    prop_data=True, qnorm_data=True, k=3, verbose=False, **kwargs):
+    k=3, verbose=False, **kwargs):
     # Check for correct input data
     if type(sm_mat)!=pd.DataFrame:
         raise TypeError('Somatic mutation data must be given as Pandas DataFrame')
@@ -56,9 +56,9 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
             if 'alpha' in kwargs:
                 alpha = float(kwargs['alpha'])
             if 'symmetric_norm' in kwargs:
-                symmetric_norm = bool(kwargs['symmetric_norm'])
+                symmetric_norm = (kwargs['symmetric_norm']=='True')
             if 'save_prop' in kwargs:
-                save_prop = bool(kwargs['save_prop'])
+                save_prop = (kwargs['save_prop']=='True')
             # Save propagation step data if desired (indicated in kwargs)
             if save_prop:
                 prop_sm_data = prop.network_propagation(propNet, sm_mat_subsample, alpha=alpha, symmetric_norm=symmetric_norm, **kwargs)
@@ -68,7 +68,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
             # Save propagation step data if desired (indicated in kwargs)
             save_prop = False
             if 'save_prop' in kwargs:
-                save_prop = bool(kwargs['save_prop'])
+                save_prop = (kwargs['save_prop']=='True')
             if save_prop:
                 prop_sm_data = prop.network_kernel_propagation(propNet, propNet_kernel, sm_mat_subsample, **kwargs)
             else:
@@ -83,7 +83,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
     # Quantile Normalize Data
     qnorm_data = True
     if 'qnorm_data' in kwargs:
-        qnorm_data = bool(kwargs['qnorm_data'])
+        qnorm_data = (kwargs['qnorm_data']=='True')
     if qnorm_data:
         prop_data_qnorm = core.qnorm(prop_sm_data)
         if verbose:
@@ -99,10 +99,10 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
     regNet_glap_arr = np.array(regNet_glap.ix[propNet_nodes][propNet_nodes])
 
     # Set netNMF parameters from kwargs if given, otherwise use defaults
-    netNMF_gamma, netNMF_maxiter, netNMF_verbose = 200, 250, False
+    netNMF_lambda, netNMF_maxiter, netNMF_verbose = 200, 250, False
     netNMF_eps, netNMF_err_tol, netNMF_err_delta_tol = 1e-15, 1e-4, 1e-4
-    if 'netNMF_gamma' in kwargs:
-        netNMF_gamma = float(kwargs['netNMF_gamma'])
+    if 'netNMF_lambda' in kwargs:
+        netNMF_lambda = float(kwargs['netNMF_lambda'])
     if 'netNMF_maxiter' in kwargs:
         netNMF_maxiter = int(kwargs['netNMF_maxiter'])
     if 'netNMF_eps' in kwargs:
@@ -114,7 +114,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
 
     # Mixed netNMF Result
     W, H, numIter, finalResid = core.mixed_netNMF(data_arr, regNet_glap_arr, k=k, 
-        gamma=netNMF_gamma, maxiter=netNMF_maxiter, eps=netNMF_eps, 
+        l=netNMF_lambda, maxiter=netNMF_maxiter, eps=netNMF_eps, 
         err_tol=netNMF_err_tol, err_delta_tol=netNMF_err_delta_tol, verbose=False)
     
     # Return netNMF result (dimension-reduced propagated patient profiles)

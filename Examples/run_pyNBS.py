@@ -182,7 +182,7 @@ if __name__ == "__main__":
         print 'Perform quantile normalization on propagated data:', params['qnorm_data']
         print '*** Network-regularized NMF (netNMF) parameters ***'
         print 'Number of clusters:', params['netNMF_k']
-        print 'Network-regularization coefficient (netNMF gamma):', params['netNMF_gamma']
+        print 'Network-regularization coefficient (netNMF lambda):', params['netNMF_lambda']
         print 'Maximum number of multiplicative updates to perform in netNMF:', params['netNMF_maxiter']
         print 'Maximum machine precision value:', params['netNMF_eps']
         print 'Maximum netNMF reconstruction error for convergence:', params['netNMF_err_tol']
@@ -202,6 +202,7 @@ if __name__ == "__main__":
             params['iteration_label']=str(i+1)
         # Run pyNBS core steps and save resulting H matrix to Hlist
         Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
+        # Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
         # Report run time of each pyNBS iteration
         t = time.time()-netNMF_time
         print 'NBS iteration:', i+1, 'complete:', t, 'seconds'

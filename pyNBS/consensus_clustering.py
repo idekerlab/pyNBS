@@ -13,7 +13,7 @@ import scipy.cluster.hierarchy as hclust
 # Returns similarity table (distance is 1-similarity) and linkage map of patients
 # Also returns cluster assignment map of patients if wanted
 def consensus_hclust_hard(Hlist, k=3, hclust_linkage_method='average',
-    hclust_linkage_metric='euclidian', verbose=True, **save_args):
+    hclust_linkage_metric='euclidean', verbose=True, **save_args):
     # Make sure all H matrices are pandas DataFrames
     if not all([type(H)==pd.DataFrame for H in Hlist]):
         raise ValueError('Not all H matrices given are pandas DataFrames.')
@@ -65,20 +65,8 @@ def consensus_hclust_hard(Hlist, k=3, hclust_linkage_method='average',
     return cc_hard_sim_table, Z, cluster_assign
 
 # Constructs Hlist object for consensus clustering functions if NBS iterations were run in parallel and outputs saved to a folder
-def Hlist_constructor_from_folder(folder, ext='.csv', normalize_H=False, verbose=False):
+def Hlist_constructor_from_folder(folder, ext='.csv'):
     co_clustering_results = [folder+fn for fn in os.listdir(folder) if fn.endswith(ext)]
     # Generate list of patient clusterings from netNMF
     Hlist = [pd.read_csv(fn, index_col=0) for fn in co_clustering_results]
-    # Normalize H matrices if needed (to make columns comparable if not already done in decomposition)
-    if normalize_H:
-        Hlist_norm = []
-        for H in Hlist:
-            H_norm = np.dot(H,np.diag(1/H.sum()))
-            Hlist_norm.append(pd.DataFrame(H_norm, index=H.index))
-        if verbose:
-            print 'Hlist constructed and normalized'
-        return Hlist_norm
-    else:
-        if verbose:
-            print 'Hlist constructed'
-        return Hlist    
+    return Hlist    
