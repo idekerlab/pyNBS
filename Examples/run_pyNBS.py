@@ -71,7 +71,7 @@ if __name__ == "__main__":
     parser.add_argument('-surv', '--survival_data', type=valid_infile, required=False,
         help='Path to patient clinical data. This file is optional. If given, (either by command line or params file) pyNBS will attempt to perform survival analysis and plot a Kaplan-Meier plot. Otherwise, no survival analysis will be performed. File must be 4-column delimited file. See the pyNBS documentation Wiki on GitHub for additional details on file format.')
     parser.add_argument('-nv', '--no_verbose', default=False, action="store_true", required=False,
-        help='Verbosity flag for suppressing reporting on patient similarity network construction steps. Default (no flag) behavior is verbose reporting.')
+        help='Verbosity flag for suppressing reporting of pyNBS algorithm progress. Default (no flag) behavior is verbose reporting.')
     # Load pyNBS arguments from parser
     args = parser.parse_args()
 

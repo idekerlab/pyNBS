@@ -24,7 +24,6 @@ setup(
 	],
 	packages=find_packages(exclude=['os', 'multiprocessing', 'random', 'time']),
 	install_requires=[
-        'argparse>=1.1',
         'lifelines>=0.9.1',
         'networkx>=1.11',
         'numpy>=1.11.0',
