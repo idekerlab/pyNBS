@@ -150,9 +150,10 @@ def filter_query_edgelist(query_edgelist, invalid_genes):
 # Third column is for weights if desired to pass weights forward
 def convert_edgelist(query_edgelist, gene_map, weighted=False):
 	if weighted:
-		return [sorted([gene_map[edge[0]],gene_map[edge[1]]])+[edge[2]] for edge in query_edgelist]	
+		converted_edgelist = [sorted([gene_map[edge[0]],gene_map[edge[1]]])+[edge[2]] for edge in query_edgelist]	
 	else:
-		return [sorted([gene_map[edge[0]],gene_map[edge[1]]]) for edge in query_edgelist]
+		converted_edgelist =  [sorted([gene_map[edge[0]],gene_map[edge[1]]]) for edge in query_edgelist]
+	return converted_edgelist
 
 # Sometimes each node needs to be converted by its best match if there are multiple names per node
 # This function uses the match_table constructed earlier to convert genes to either symbol or entrez format only
@@ -166,7 +167,7 @@ def convert_custom_namelist(names, field, match_table):
 		else:
 			# Return conversion with max score or None if no conversion
 			max_score = conversion['Score'].max()
-			return conversion[conversion['Score']==max_score].ix[0]['Symbol']
+			converted_namelist = conversion[conversion['Score']==max_score].ix[0]['Symbol']
 	elif field=='entrez':
 		# Return match table values that have matched symbol
 		conversion = match_table.ix[names][~(match_table.ix[names]['EntrezID'].isnull())]
@@ -175,7 +176,8 @@ def convert_custom_namelist(names, field, match_table):
 		else:
 			# Return conversion with max score or None if no conversion
 			max_score = conversion['Score'].max()
-			return conversion[conversion['Score']==max_score].ix[0]['EntrezID']
+			converted_namelist = conversion[conversion['Score']==max_score].ix[0]['EntrezID']
+	return converted_namelist
 
 # Filter converted edge lists
 def filter_converted_edgelist(edgelist, remove_self_edges=True, weighted=False):
