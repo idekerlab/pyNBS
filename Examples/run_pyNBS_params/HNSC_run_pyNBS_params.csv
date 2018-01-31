@@ -27,7 +27,6 @@ save_knn_glap,False
 ######################################
 #   Network Propagation Parameters   #
 ######################################
-prop_data,True
 prop_alpha,0.7
 prop_symmetric_norm,False
 save_kernel,False

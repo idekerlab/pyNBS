@@ -17,7 +17,7 @@ echo  'Number of pyNBS iterations: '$niter
 # Please edit the following paths to point to the desired files for your own usage
 pyNBS_script=$PWD'/run_pyNBS.py'
 echo 'Python Script: '$pyNBS_script
-network_file1='/cellar/users/jkhuang/Data/Projects/pyNBS/Data/CancerSubnetwork_v1_old.txt'
+network_file=$PWD'/Example_Data/Network_Files/CancerSubnetwork.txt'
 echo 'Network File: '$network_file
 mutation_file=$PWD'/Example_Data/Mutation_Files/'$cancer_type'_sm_data.txt'
 echo 'Somatic Mutation Data File: '$mutation_file
@@ -27,16 +27,9 @@ params_file=$PWD'/'$cancer_type'_run_pyNBS_params.csv'
 echo 'pyNBS Parameters File: '$params_file
 
 # Setting optional parameters for pyNBS run
-outdir=$PWD'/Results/via_script/'$cancer_type'/'
+job_name=$4
+echo 'Job Name: '$job_name
+outdir=$5
 echo 'Output directory: '$outdir
-job_name1=$cancer_type'_CancerSubnetwork_old_k'$k
-echo 'Job Name: '$job_name1
 
-python $pyNBS_script $mutation_file $network_file1 -params $params_file -o $outdir -j $job_name1 -k $k -n $niter -surv $survival_data
-
-# # Run pyNBS again with "new" Cancer Subnetwork
-# network_file2=$PWD'/Example_Data/Network_Files/CancerSubnetwork.txt'
-# echo 'Network File: '$network_file
-# job_name2=$cancer_type'_CancerSubnetwork_new_k'$k
-# echo 'Job Name: '$job_name2
-# python $pyNBS_script $mutation_file $network_file2 -params $params_file -o $outdir -j $job_name2 -k $k -n $niter -surv $survival_data
+echo python $pyNBS_script $mutation_file $network_file -params $params_file -o $outdir -j $job_name -k $k -n $niter -surv $survival_data

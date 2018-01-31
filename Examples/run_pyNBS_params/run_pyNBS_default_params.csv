@@ -34,7 +34,6 @@ min_muts,10
 ######################################
 #   Network Propagation Parameters   #
 ######################################
-prop_data,True
 prop_alpha,0.7
 prop_symmetric_norm,False
 save_kernel,False
@@ -44,7 +43,7 @@ qnorm_data,True
 ########################################################
 #   Network-Regularized NMF Decomposition Parameters   #
 ########################################################
-netNMF_k,4
+netNMF_k,3
 netNMF_gamma,200
 netNMF_maxiter,250
 netNMF_eps,1e-15

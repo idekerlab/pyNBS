@@ -4,8 +4,8 @@
 #   Overall pyNBS parameters   #
 ################################
 verbose,True
-job_name,BLCA_CancerSubnetwork_k4_pyNBS
-outdir,./Results/via_script/BLCA/
+# job_name,BLCA_CancerSubnetwork_k4_pyNBS
+# outdir,./Results/via_script/BLCA/
 
 ###############################
 #   Data Loading Parameters   #
@@ -27,7 +27,6 @@ save_knn_glap,False
 ######################################
 #   Network Propagation Parameters   #
 ######################################
-prop_data,True
 prop_alpha,0.7
 prop_symmetric_norm,False
 save_kernel,False
