@@ -120,7 +120,7 @@ def qnorm(data):
 #   maxiter = Maximum number of iterations to execute before break
 # verbose = print statements on update progress
 def mixed_netNMF(data, KNN_glap, k=3, l=200, maxiter=250, 
-    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=False):
+    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-8, verbose=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H
@@ -198,7 +198,7 @@ def mixed_netNMF(data, KNN_glap, k=3, l=200, maxiter=250,
 # This version of mixed_netNMF returns additional lists of each intermediate netNMF update step
 # as well as internal statistics of the netNMF updates at each update step
 def mixed_netNMF_debug(data, KNN_glap, W_init=None, H_init=None, k=3, l=200, maxiter=250, 
-    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-4, verbose=False):
+    eps=1e-15, err_tol=1e-4, err_delta_tol=1e-8, verbose=False):
     # Initialize H and W Matrices from data array if not given
     r, c = data.shape[0], data.shape[1]
     # Initialize H

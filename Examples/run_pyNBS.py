@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument('-k', '--K', type=positive_int, required=False,
         help='Number of patients to stratify samples into.')    
     parser.add_argument('-n', '--niter', type=positive_int, required=False,
-        help='Number of iterations to perform sub-sampling, propagation and network-regularized NMF before consensus clustering.')
+        help='Number of iterations to perform sub-sampling, propagation and network-regularized NMF before consensus clustering. Default is 100 (we do not recommend setting niter to a value smaller than this).')
     parser.add_argument('-surv', '--survival_data', type=valid_infile, required=False,
         help='Path to patient clinical data. This file is optional. If given, (either by command line or params file) pyNBS will attempt to perform survival analysis and plot a Kaplan-Meier plot. Otherwise, no survival analysis will be performed. File must be 4-column delimited file. See the pyNBS documentation Wiki on GitHub for additional details on file format.')
     parser.add_argument('-nv', '--no_verbose', default=False, action="store_true", required=False,
@@ -201,8 +201,8 @@ if __name__ == "__main__":
         if (params['save_prop']) or (params['save_H']):
             params['iteration_label']=str(i+1)
         # Run pyNBS core steps and save resulting H matrix to Hlist
-        Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, propNet_kernel=kernel, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
-        # Hlist.append(pyNBS_single.NBS_single(sm_mat, propNet=network, regNet_glap=knnGlap, k=params['netNMF_k'], **params))
+        Hlist.append(pyNBS_single.NBS_single(sm_mat, knnGlap, propNet=network, propNet_kernel=kernel, k=params['netNMF_k'], **params))
+        # Hlist.append(pyNBS_single.NBS_single(sm_mat, knnGlap, propNet=network, k=params['netNMF_k'], **params))
         # Report run time of each pyNBS iteration
         t = time.time()-netNMF_time
         print 'NBS iteration:', i+1, 'complete:', t, 'seconds'
@@ -223,33 +223,11 @@ if __name__ == "__main__":
             print save_args['outdir']+str(save_args['job_name'])+'_cc_map.png'
     # Perform consensus clustering
     if params['save_cc_results']:
-        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], verbose=verbose, **save_args)
+        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], 
+            hclust_linkage_method=params['hclust_linkage_method'], hclust_linkage_metric=params['hclust_linkage_metric'], verbose=verbose, **save_args)
     else:
-        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], verbose=verbose)
-    # Save co-clustering map if desired
-    if params['save_cc_map']:
-        pyNBS_clust_cmap = plot.cluster_color_assign(NBS_cluster_assign, name='pyNBS Cluster')
-        plot.plot_cc_map(NBS_cc_table, NBS_cc_linkage, col_color_map=pyNBS_clust_cmap, **save_args)
-    print
-    print '##################################################################################'
-    print '# Performing Consensus Clustering'
-    print '##################################################################################'
-    if verbose:
-        print 'Number of consensus clusters:', params['netNMF_k']
-        print 'Consensus hierarchical clustering linkage method', params['hclust_linkage_method']
-        print 'Consensus hierarchical clustering linkage metric', params['hclust_linkage_metric']
-        print 'Save consensus clustering results', params['save_cc_results']
-        if params['save_cc_results']:
-            print save_args['outdir']+str(save_args['job_name'])+'_cc_matrix.csv'
-            print save_args['outdir']+str(save_args['job_name'])+'_cluster_assignments.csv' 
-        print 'Save patient co-clustering map', params['save_cc_map']
-        if params['save_cc_map']:
-            print save_args['outdir']+str(save_args['job_name'])+'_cc_map.png'
-    # Perform consensus clustering
-    if params['save_cc_results']:
-        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], verbose=verbose, **save_args)
-    else:
-        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], verbose=verbose)
+        NBS_cc_table, NBS_cc_linkage, NBS_cluster_assign = cc.consensus_hclust_hard(Hlist, k=params['netNMF_k'], 
+            hclust_linkage_method=params['hclust_linkage_method'], hclust_linkage_metric=params['hclust_linkage_metric'], verbose=verbose, **save_args)
     # Save co-clustering map if desired
     if params['save_cc_map']:
         pyNBS_clust_cmap = plot.cluster_color_assign(NBS_cluster_assign, name='pyNBS Cluster')

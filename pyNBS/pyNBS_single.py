@@ -105,7 +105,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
 
     # Set netNMF parameters from kwargs if given, otherwise use defaults
     netNMF_lambda, netNMF_maxiter, netNMF_verbose = 200, 250, False
-    netNMF_eps, netNMF_err_tol, netNMF_err_delta_tol = 1e-15, 1e-4, 1e-4
+    netNMF_eps, netNMF_err_tol, netNMF_err_delta_tol = 1e-15, 1e-4, 1e-8
     if 'netNMF_lambda' in kwargs:
         netNMF_lambda = float(kwargs['netNMF_lambda'])
     if 'netNMF_maxiter' in kwargs:
