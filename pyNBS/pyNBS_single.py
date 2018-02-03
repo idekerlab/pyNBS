@@ -83,7 +83,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
     # Quantile Normalize Data
     qnorm_data = True
     if 'qnorm_data' in kwargs:
-        qnorm_data = ((params['qnorm_data']=='True') | (params['qnorm_data']==True))
+        qnorm_data = ((kwargs['qnorm_data']=='True') | (kwargs['qnorm_data']==True))
     if qnorm_data:
         prop_data_qnorm = core.qnorm(prop_sm_data)
         if verbose:
