@@ -28,7 +28,7 @@ setup(
         'networkx>=1.11',
         'numpy>=1.11.0',
         'matplotlib>=1.5.1',
-        'mkl>=1.1.2'
+        'mkl>=1.1.2',
         'pandas>=0.19.0',
         'scipy>=0.17.0',
         'scikit-learn>=0.17.1',
