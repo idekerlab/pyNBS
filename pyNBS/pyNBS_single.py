@@ -53,12 +53,12 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
             # If kernel is not given and some propagation parameters are given in kwargs, set propagation parameters
             # Otherwise set default values
             alpha, symmetric_norm, save_prop = 0.7, False, False
-            if 'alpha' in kwargs:
-                alpha = float(kwargs['alpha'])
-            if 'symmetric_norm' in kwargs:
-                symmetric_norm = (kwargs['symmetric_norm']=='True')
+            if 'prop_alpha' in kwargs:
+                alpha = float(kwargs['prop_alpha'])
+            if 'prop_symmetric_norm' in kwargs:
+                symmetric_norm = ((kwargs['prop_symmetric_norm']=='True') | (kwargs['prop_symmetric_norm']==True))
             if 'save_prop' in kwargs:
-                save_prop = (kwargs['save_prop']=='True')
+                save_prop = ((kwargs['save_prop']=='True') | (kwargs['save_prop']==True))
             # Save propagation step data if desired (indicated in kwargs)
             if save_prop:
                 prop_sm_data = prop.network_propagation(propNet, sm_mat_subsample, alpha=alpha, symmetric_norm=symmetric_norm, **kwargs)
@@ -68,7 +68,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
             # Save propagation step data if desired (indicated in kwargs)
             save_prop = False
             if 'save_prop' in kwargs:
-                save_prop = (kwargs['save_prop']=='True')
+                save_prop = ((kwargs['save_prop']=='True') | (kwargs['save_prop']==True))
             if save_prop:
                 prop_sm_data = prop.network_kernel_propagation(propNet, propNet_kernel, sm_mat_subsample, **kwargs)
             else:
@@ -83,7 +83,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
     # Quantile Normalize Data
     qnorm_data = True
     if 'qnorm_data' in kwargs:
-        qnorm_data = (kwargs['qnorm_data']=='True')
+        qnorm_data = ((params['qnorm_data']=='True') | (params['qnorm_data']==True))
     if qnorm_data:
         prop_data_qnorm = core.qnorm(prop_sm_data)
         if verbose:
