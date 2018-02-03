@@ -1,35 +1,43 @@
 #! /bin/bash
 
-# Valid values for 'cancer_type' for these examples are: 'BLCA', 'COAD', 'HNSC', 'OV', 'UCEC'
-# Use one of the above codes when calling this script as the first parameter
-# For more information on pyNBS options, please visit the GitHub Documentation Wiki for more detailed documentation
-cancer_type=$1
-echo
-echo 'Running pyNBS command line example for: '$cancer_type
-# The second parameter is the number of clusters to separate all samples into (typically a small integer)
-k=$2
-echo 'Number of clusters: '$k
-# The third parameter is the number of iterations to run pyNBS
-niter=$3
-echo  'Number of pyNBS iterations: '$niter
+# Which shell to use
+#$ -S /bin/bash
+# Which queue to use
+#$ -l long
+# Transfer all variables to job script (e.g. PATH, LD_LIBRARY_PATH, etc.)
+#$ -V
 
-# This example script assumes you are in the Command_Line_Tools directory of the pyNBS GitHub repository
-# Please edit the following paths to point to the desired files for your own usage
-pyNBS_script=$PWD'/run_pyNBS.py'
-echo 'Python Script: '$pyNBS_script
-network_file=$PWD'/Example_Data/Network_Files/CancerSubnetwork.txt'
-echo 'Network File: '$network_file
-mutation_file=$PWD'/Example_Data/Mutation_Files/'$cancer_type'_sm_data.txt'
+date
+# Get task parameters
+param_file=$1
+task_params=($(sed "${SGE_TASK_ID}q;d" $param_file))
+echo '-------------'
+mutation_file=${task_params[0]}
 echo 'Somatic Mutation Data File: '$mutation_file
-survival_data=$PWD'/Example_Data/Clinical_Files/'$cancer_type'.clin.merged.surv.txt'
-echo 'Survival Data File: '$survival_data
-params_file=$PWD'/'$cancer_type'_run_pyNBS_params.csv'
+network_file=${task_params[1]}
+echo 'Network File: '$network_file
+params_file=${task_params[2]}
 echo 'pyNBS Parameters File: '$params_file
-
-# Setting optional parameters for pyNBS run
-job_name=$4
+outdir=${task_params[3]}
+echo 'Output Directory: '$outdir
+job_name=${task_params[4]}
 echo 'Job Name: '$job_name
-outdir=$5
-echo 'Output directory: '$outdir
+a=${task_params[5]}
+echo 'Alpha: '$a
+k=${task_params[6]}
+echo 'Nubmer of Clusters: '$k
+n=${task_params[7]}
+echo 'pyNBS Iterations: '$n
+survival_file=${task_params[8]}
+echo 'Survival Data File: '$survival_file
+threads=${task_params[9]}
+echo 'Number of threads: '$threads
 
-echo python $pyNBS_script $mutation_file $network_file -params $params_file -o $outdir -j $job_name -k $k -n $niter -surv $survival_data
+#Run python script
+pyNBS_script='/cellar/users/jkhuang/Data/Projects/pyNBS/pyNBS/Examples/run_pyNBS.py'
+echo 'Python Script: '$pyNBS_script
+echo 'pyNBS Call:'
+echo python $pyNBS_script $mutation_file $network_file -params $params_file -o $outdir -j $job_name -a $a -k $k -n $n -surv $survival_file -t $threads
+echo '-------------'
+python $pyNBS_script $mutation_file $network_file -params $params_file -o $outdir -j $job_name -a $a -k $k -n $n -surv $survival_file -t $threads
+date
