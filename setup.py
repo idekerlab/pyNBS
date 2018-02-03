@@ -22,12 +22,13 @@ setup(
 		'License :: OSI Approved :: MIT License',
 		'Programming Language :: Python :: 2.7'
 	],
-	packages=find_packages(exclude=['os', 'multiprocessing', 'random', 'time']),
+	packages=find_packages(exclude=['os', 'random', 'time']),
 	install_requires=[
         'lifelines>=0.9.1',
         'networkx>=1.11',
         'numpy>=1.11.0',
         'matplotlib>=1.5.1',
+        'mkl>=1.1.2'
         'pandas>=0.19.0',
         'scipy>=0.17.0',
         'scikit-learn>=0.17.1',

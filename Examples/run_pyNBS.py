@@ -22,6 +22,7 @@ import os
 import time
 import pandas as pd
 import numpy as np
+import mkl
 
 # Valid file path check (Does not check file formatting, but checks if given path exists and is readable)
 def valid_infile(in_file):
@@ -70,10 +71,15 @@ if __name__ == "__main__":
         help='Number of iterations to perform sub-sampling, propagation and network-regularized NMF before consensus clustering. Default is 100 (we do not recommend setting niter to a value smaller than this).')
     parser.add_argument('-surv', '--survival_data', type=valid_infile, required=False,
         help='Path to patient clinical data. This file is optional. If given, (either by command line or params file) pyNBS will attempt to perform survival analysis and plot a Kaplan-Meier plot. Otherwise, no survival analysis will be performed. File must be 4-column delimited file. See the pyNBS documentation Wiki on GitHub for additional details on file format.')
+    parser.add_argument('-t', '--threads', type=positive_int, default=2, required=False,
+        help='Number of threads to be used by the pyNBS process. The default number of threads is set to 2 (not to be confused with the number of cores used). Certain processes will execute more quickly if more threads are used.')
     parser.add_argument('-nv', '--no_verbose', default=False, action="store_true", required=False,
         help='Verbosity flag for suppressing reporting of pyNBS algorithm progress. Default (no flag) behavior is verbose reporting.')
     # Load pyNBS arguments from parser
     args = parser.parse_args()
+
+    # Set the number of threads to use
+    mkl.set_num_threads(args.threads)
 
     # Load pyNBS intermediate parameters (from file if applicable, otherwise use all default values)
     if args.params_file is None:
