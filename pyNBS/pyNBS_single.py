@@ -95,7 +95,7 @@ def NBS_single(sm_mat, regNet_glap, propNet=None, propNet_kernel=None,
 
     # Prepare data for mixed netNMF function (align propagated profile columns with regularization network laplacian rows)
     if propNet is not None:
-        propNet_nodes = propNet.nodes()
+        propNet_nodes = list(propNet.nodes)
         data_arr = np.array(prop_data_qnorm.T.ix[propNet_nodes])
         regNet_glap_arr = np.array(regNet_glap.ix[propNet_nodes][propNet_nodes])
     else:

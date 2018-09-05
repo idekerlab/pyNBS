@@ -19,7 +19,7 @@ import time
 def network_inf_KNN_glap(network, gamma=0.01, kn=11, verbose=True, **save_args):
     glap_inv_starttime = time.time()
     # Construct network laplacian matrix
-    network_nodes = network.nodes()
+    network_nodes = list(network.nodes)
     L_arr = nx.laplacian_matrix(network).todense()
     # Adjust diagonal of laplacian matrix by small gamma as seen in Vandin 2011
     L_vandin = L_arr + gamma*np.identity(len(network_nodes))
@@ -43,7 +43,7 @@ def network_inf_KNN_glap(network, gamma=0.01, kn=11, verbose=True, **save_args):
         for neighbor in gene_knn:
             if L_inv.ix[gene][neighbor] > 0:
                 KNN_graph.add_edge(gene, neighbor)
-    KNN_nodes = KNN_graph.nodes()
+    KNN_nodes = list(KNN_graph.nodes)
     # Calculate KNN graph laplacian
     knnGlap_sparse = nx.laplacian_matrix(KNN_graph)
     knnGlap = pd.DataFrame(knnGlap_sparse.todense(), index=KNN_nodes, columns=KNN_nodes)
@@ -78,9 +78,9 @@ def subsample_sm_mat(sm_mat, propNet=None, pats_subsample_p=0.8, gene_subsample_
     if propNet is not None:
         # Check if network node names intersect with somatic mutation matrix column names
         # If there is no intersection, throw an error, gene names are not matched
-        if len(set(propNet.nodes()).intersection(set(sm_mat.columns)))==0:
+        if len(set(list(propNet.nodes)).intersection(set(sm_mat.columns)))==0:
             raise ValueError('No mutations found in network nodes. Gene names may be mismatched.')
-        gind_sample_filt = gind_sample.T.ix[propNet.nodes()].fillna(0).T
+        gind_sample_filt = gind_sample.T.ix[list(propNet.nodes)].fillna(0).T
     else:
         gind_sample_filt = gind_sample
     return gind_sample_filt

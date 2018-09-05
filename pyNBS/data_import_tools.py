@@ -123,7 +123,7 @@ def load_params(params_file=None):
 # Shuffle network by preserving node-degree
 def degree_shuffNet(network, verbose=False):
 	shuff_time = time.time()
-	edge_len=len(network.edges())
+	edge_len=len(list(network.edges))
 	shuff_net=network.copy()
 	try:
 		nx.double_edge_swap(shuff_net, nswap=edge_len, max_tries=edge_len*10)
@@ -132,16 +132,16 @@ def degree_shuffNet(network, verbose=False):
 			print 'Note: Maximum number of swap attempts ('+repr(edge_len*10)+') exceeded before desired swaps achieved ('+repr(edge_len)+').'
 	if verbose:
 		# Evaluate Network Similarity
-		shared_edges = len(set(network.edges()).intersection(set(shuff_net.edges())))
+		shared_edges = len(set(list(network.edges)).intersection(set(list(shuff_net.edges))))
 		print 'Network shuffled:', time.time()-shuff_time, 'seconds. Edge similarity:', shared_edges/float(edge_len)
 	return shuff_net
 
 # Shuffle network by permuting network node labels
 def label_shuffNet(network, verbose=False):
 	shuff_time = time.time()
-	edge_len=len(network.edges())
+	edge_len=len(list(network.edges))
 	# Permute node labels
-	network_nodes = network.nodes()
+	network_nodes = list(network.nodes)
 	shuff_nodes = list(network_nodes)
 	for i in range(10):
 		random.shuffle(shuff_nodes)
@@ -149,7 +149,7 @@ def label_shuffNet(network, verbose=False):
 	shuff_net = nx.relabel_nodes(network, network_relabel_map, copy=True)
 	if verbose:
 		# Evaluate Network Similarity
-		shared_edges = len(set(network.edges()).intersection(set(shuff_net.edges())))
+		shared_edges = len(set(list(network.edges)).intersection(set(list(shuff_net.edges))))
 		print 'Network shuffled:', time.time()-shuff_time, 'seconds. Edge similarity:', shared_edges/float(edge_len)
 	return shuff_net		
 
