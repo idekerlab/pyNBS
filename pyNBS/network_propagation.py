@@ -47,7 +47,7 @@ def network_propagation(network, binary_matrix, alpha=0.7, symmetric_norm=False,
     subgraphs = list(nx.connected_component_subgraphs(network))
     # Initialize propagation results by propagating first subgraph
     subgraph = subgraphs[0]
-    subgraph_nodes = list(subgraph.nodes)
+    subgraph_nodes = subgraph.nodes()
     prop_data_node_order = list(subgraph_nodes)
     binary_matrix_filt = np.array(binary_matrix.T.ix[subgraph_nodes].fillna(0).T)
     subgraph_norm = normalize_network(subgraph, symmetric_norm=symmetric_norm)
@@ -55,7 +55,7 @@ def network_propagation(network, binary_matrix, alpha=0.7, symmetric_norm=False,
     prop_data = fast_random_walk(alpha, binary_matrix_filt, subgraph_norm, prop_data_empty)
     # Get propagated results for remaining subgraphs
     for subgraph in subgraphs[1:]:
-        subgraph_nodes = list(subgraph.nodes)
+        subgraph_nodes = subgraph.nodes()
         prop_data_node_order = prop_data_node_order + subgraph_nodes
         binary_matrix_filt = np.array(binary_matrix.T.ix[subgraph_nodes].fillna(0).T)
         subgraph_norm = normalize_network(subgraph, symmetric_norm=symmetric_norm)
