@@ -25,7 +25,7 @@ setup(
 	packages=find_packages(exclude=['os', 'random', 'time']),
 	install_requires=[
         'lifelines>=0.9.1',
-        'networkx>=2.0',
+        'networkx>=1.11,<2.0',
         'numpy>=1.11.0',
         'matplotlib>=1.5.1',
         'pandas>=0.19.0',
