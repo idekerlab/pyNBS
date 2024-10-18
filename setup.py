@@ -24,12 +24,15 @@ setup(
 	],
 	packages=find_packages(exclude=['os', 'random', 'time']),
 	install_requires=[
-        'lifelines>=0.9.1',
-        'networkx>=2.0',
-        'numpy>=1.11.0',
-        'matplotlib>=1.5.1',
-        'pandas>=0.19.0',
-        'scipy>=0.17.0',
-        'scikit-learn>=0.17.1',
-        'seaborn>=0.7.1']
+		'pyparsing==2.4.2',
+        'decorator==4.4.2',
+		'cycler==0.10.0',
+        'lifelines==0.9.1',
+        'networkx==2.0',
+        'numpy==1.11.0',
+        'matplotlib==1.5.1',
+        'pandas==0.19.0',
+        'scipy==0.17.0',
+        'scikit-learn==0.17.1',
+        'seaborn==0.7.1']
 )
